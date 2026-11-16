@@ -1,0 +1,79 @@
+.stat {
+  padding: 20px 18px;
+  min-height: 156px;
+}
+.stat-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 11px;
+}
+.stat-icon {
+  display: flex;
+  padding: 7px;
+  border-radius: 8px;
+  background: #f1ecff;
+  color: var(--purple);
+}
+.stat-icon.pink {
+  background: #fff0f5;
+  color: var(--pink);
+}
+.stat-icon.amber {
+  background: #fff7e6;
+  color: var(--amber);
+}
+.stat-icon.green {
+  background: #e7f8f1;
+  color: var(--green);
+}
+.label {
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: #747183;
+}
+.value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+.value small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.stat-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-top: 19px;
+  gap: 10px;
+}
+.stat-bottom b {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 9px;
+}
+.stat-bottom small {
+  font-size: 9px;
+}
+.stat-bottom svg {
+  width: 49%;
+  height: 38px;
+  color: var(--purple);
+}
+@media (max-width: 700px) {
+  .stat {
+    padding: 14px 12px;
+  }
+  .value {
+    font-size: 17px;
+  }
+  .stat-top {
+    gap: 5px;
+  }
+  .label {
+    font-size: 8px;
+  }
+}
