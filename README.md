@@ -50,4 +50,4 @@ Las preferencias de configuración se guardan como demostración, sin controlar 
 
 Las fuentes de Google son opcionales; existe una alternativa local Arial. Los iconos y el logo se dibujan con SVG locales.
 
-Desarrollador: **Khaled Benavides**. Flujo: `main` → `develop` → `feature/NN-componente`; cada feature se integra mediante un PR con commit de merge para conservar el gráfico de ramas.
+Desarrollador: **Khaled Benavides**. `main` conserva su publicación parcial y `develop` reúne el frontend. Las features se encadenan desde la anterior y cada una se integra mediante PR a develop, conservando líneas continuas en el gráfico. La configuración de Git Graph usa cian, verde y rosado. Consulta [el flujo y sus colores](docs/GIT-Y-PR.md).

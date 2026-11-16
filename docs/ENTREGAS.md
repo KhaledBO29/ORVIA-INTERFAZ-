@@ -1,6 +1,6 @@
 # Entregas ORVIA
 
-26 ramas feature, con un commit de implementación por entrega y PR hacia develop. Las features conservan sus referencias después del merge. Main conserva la base original.
+26 entregas de implementación y una entrega de organización del historial, cada una con su rama feature y commit. Todas se integran por PR hacia develop. Las features conservan sus referencias después del merge y forman una cadena continua. Main conserva su publicación parcial.
 
 | Orden | Rama | Commit | Pull request |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@
 | 25 | feature/25-ensamblaje-rutas | Feat:Ensamblar componente App y rutas de todas las pantallas | [#26](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/26) |
 | 26 | feature/26-documentacion-pruebas | Feat:Agregar guia por componentes y validacion automatizada | PR de esta entrega; consultar la rama en GitHub |
 
-El último PR agrega este índice. Su URL también aparece en el listado de pull requests del repositorio.
+La entrega 27 configura Git Graph y documenta la organización continua: [ver su PR por rama](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pulls?q=is%3Apr+head%3Afeature%2F27-organizacion-historial).
 
 Repositorio: https://github.com/KhaledBO29/ORVIA-INTERFAZ-
 
