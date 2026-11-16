@@ -1,0 +1,22 @@
+<a class="skip-link" href="#main-content">Ir al contenido</a>
+<div class="app-shell" [class.narrow]="collapsed()">
+  <div class="sidebar-wrap" [class.open]="mobileOpen()">
+    <app-sidebar
+      [collapsed]="collapsed()"
+      (toggle)="toggle()"
+      (navigated)="mobileOpen.set(false)"
+    />
+  </div>
+  @if (mobileOpen()) {
+    <button class="menu-backdrop" aria-label="Cerrar menú" (click)="mobileOpen.set(false)"></button>
+  }
+  <div class="app-content">
+    <app-header (toggle)="toggle()" />
+    <main id="main-content" class="page-main">
+      @if (store.storageError()) {
+        <p role="alert" class="notice">{{ store.storageError() }}</p>
+      }
+      <router-outlet />
+    </main>
+  </div>
+</div>
