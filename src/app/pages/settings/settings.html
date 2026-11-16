@@ -1,0 +1,96 @@
+<div class="page-intro">
+  <div>
+    <h1>Configuración general</h1>
+    <p>Administra los parámetros y preferencias de tu empresa.</p>
+  </div>
+</div>
+@if (saved()) {
+  <p class="notice" role="status">Configuración guardada en este navegador.</p>
+}
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="settings-grid">
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="bank" /> Información de la empresa</h2>
+      </div>
+      <label>Razón social<input formControlName="name" /></label
+      ><label>NIT<input formControlName="nit" /></label
+      ><label>Correo electrónico<input type="email" formControlName="email" /></label
+      ><label>Teléfono<input formControlName="phone" /></label>
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="box" /> Configuración de plantas</h2>
+      </div>
+      @for (
+        plant of ['Planta Principal (Triturado)', 'Planta El Encano', 'Planta Guaitarilla'];
+        track plant
+      ) {
+        <div class="summary-line">
+          <span>{{ plant }}</span
+          ><span class="badge success">Activa</span>
+        </div>
+      }
+      <p class="explanation">
+        Estas plantas son datos de demostración. Los filtros del encabezado permiten consultar las
+        plantas principal y El Encano.
+      </p>
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="truck" /> Parámetros de operación</h2>
+      </div>
+      <div class="summary-line"><span>Capacidad estándar</span><strong>12,0 m³</strong></div>
+      <div class="summary-line"><span>Capacidad mínima</span><strong>6,0 m³</strong></div>
+      <label class="toggle"
+        >Foto obligatoria en salida<input type="checkbox" formControlName="photo" /></label
+      ><label class="toggle">GPS obligatorio<input type="checkbox" formControlName="gps" /></label
+      ><label class="toggle"
+        >Notificaciones locales<input type="checkbox" formControlName="notifications"
+      /></label>
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="box" /> Materiales y productos</h2>
+      </div>
+      @for (
+        material of [
+          'Triturado · 3/4″, 1/2″, 1″',
+          'Base granular · Base, subbase',
+          'Arena triturada · Fina',
+          'Relleno triturado',
+        ];
+        track material
+      ) {
+        <div class="summary-line">{{ material }}<span class="badge">m³</span></div>
+      }
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="wallet" /> Métodos de pago</h2>
+      </div>
+      <label class="toggle">Efectivo<input type="checkbox" formControlName="cash" /></label
+      ><label class="toggle"
+        >Transferencia bancaria<input type="checkbox" formControlName="transfer"
+      /></label>
+      <p class="explanation">
+        Preferencias de demostración. No se procesan pagos ni se conectan servicios de GPS.
+      </p>
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2><app-icon name="check" /> Respaldo y seguridad</h2>
+      </div>
+      <div class="summary-line"><span>Almacenamiento</span><strong>LocalStorage</strong></div>
+      <div class="summary-line"><span>Modo</span><span class="badge">Demostración</span></div>
+      <p class="explanation">
+        La información se guarda en este dispositivo. No existe sincronización entre usuarios o
+        equipos.
+      </p>
+    </section>
+  </div>
+  @if (form.touched && form.invalid) {
+    <p class="negative" role="alert">Revisa los datos de la empresa y escribe un correo válido.</p>
+  }
+  <button type="submit" class="primary save">Guardar configuración</button>
+</form>
