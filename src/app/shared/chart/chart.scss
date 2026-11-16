@@ -1,0 +1,56 @@
+.chart {
+  padding: 20px;
+  height: 100%;
+  min-height: 330px;
+}
+.legend {
+  display: flex;
+  gap: 20px;
+  font-size: 10px;
+  color: var(--purple);
+  margin: 8px 0 15px;
+}
+.legend span + span {
+  color: var(--pink);
+}
+.plot {
+  display: flex;
+  align-items: stretch;
+}
+.axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--muted);
+  padding: 35px 0 29px;
+  width: 66px;
+  flex-shrink: 0;
+}
+.plot svg {
+  width: calc(100% - 66px);
+  min-height: 190px;
+}
+.dates {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 66px;
+  font-size: 9px;
+  color: var(--muted);
+}
+.chart-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  margin-top: 22px;
+  padding-top: 17px;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--muted);
+}
+strong {
+  display: block;
+  font-size: 12px;
+  color: var(--purple);
+  margin-top: 7px;
+}

@@ -1,0 +1,81 @@
+<header>
+  <div class="heading">
+    <button class="icon-button" aria-label="Abrir o contraer menú" (click)="toggle.emit()">
+      <app-icon name="menu" /></button
+    ><strong>{{ title() }}</strong>
+  </div>
+  <div class="search">
+    <app-icon name="search" /><input
+      aria-label="Buscar registros"
+      placeholder="Buscar clientes, materiales, pedidos..."
+      [value]="store.search()"
+      (input)="update('search', $event)"
+    /><kbd>Buscar</kbd>
+  </div>
+  <label class="filter"
+    ><app-icon name="bank" /><select
+      aria-label="Empresa"
+      [value]="store.company()"
+      (change)="update('company', $event)"
+    >
+      <option>Todas las empresas</option>
+      <option>Planta de Triturado</option>
+      <option>Comercializadora</option>
+    </select></label
+  ><label class="branch-filter"
+    ><select aria-label="Sucursal" [value]="store.plant()" (change)="update('plant', $event)">
+      <option>Todas las sucursales</option>
+      <option>Planta Principal</option>
+      <option>Planta El Encano</option>
+    </select></label
+  ><label class="period"
+    ><app-icon name="calendar" /><select
+      aria-label="Período"
+      [value]="store.period()"
+      (change)="update('period', $event)"
+    >
+      <option>Este mes</option>
+      <option>Todo el año</option>
+    </select></label
+  >
+  <div class="header-actions">
+    <button
+      class="icon-button notification"
+      aria-label="Notificaciones"
+      [attr.aria-expanded]="notifications()"
+      (click)="notifications.set(!notifications()); help.set(false)"
+    >
+      <app-icon name="bell" /><b>3</b></button
+    ><button
+      class="icon-button"
+      aria-label="Ayuda"
+      [attr.aria-expanded]="help()"
+      (click)="help.set(!help()); notifications.set(false)"
+    >
+      <app-icon name="help" />
+    </button>
+    <div class="profile">
+      <div class="avatar">KB</div>
+      <span><strong>Khaled Benavides</strong><small>Propietario</small></span>
+    </div>
+  </div>
+</header>
+@if (notifications()) {
+  <section class="popover card">
+    <h2>Centro de notificaciones</h2>
+    <p>3 facturas requieren revisión</p>
+    <p>Stock bajo de base granular</p>
+    <p>Una recepción está en proceso</p>
+    <button (click)="notifications.set(false)">Cerrar</button>
+  </section>
+}
+@if (help()) {
+  <section class="popover card">
+    <h2>Tu espacio ORVIA</h2>
+    <p>
+      Filtra por empresa o planta y consulta los registros. Los cambios de esta demo se guardan en
+      este navegador.
+    </p>
+    <button (click)="help.set(false)">Entendido</button>
+  </section>
+}

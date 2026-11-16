@@ -1,0 +1,72 @@
+<div class="backdrop" (click)="closed.emit()">
+  <section
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="form-title"
+    (click)="$event.stopPropagation()"
+    appDialogFocus
+    (dismissed)="closed.emit()"
+    class="card dialog"
+  >
+    <div class="card-head">
+      <div>
+        <small>GESTIÓN DE OPERACIONES</small>
+        <h1 id="form-title">{{ title() }}</h1>
+      </div>
+      <button type="button" aria-label="Cerrar formulario" (click)="closed.emit()">
+        <app-icon name="close" />
+      </button>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label
+        >Proveedor o cliente<input formControlName="name" placeholder="Ej. Canteras Andinas S.A.S."
+      /></label>
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <p class="negative">Ingresa un nombre de al menos 3 caracteres.</p>
+      }
+      <div class="fields">
+        <label
+          >Material<select formControlName="detail">
+            <option>Triturado 3/4″ (19 mm)</option>
+            <option>Triturado 1/2″ (12 mm)</option>
+            <option>Base granular</option>
+            <option>Arena triturada</option>
+            <option>Relleno triturado</option>
+          </select></label
+        ><label
+          >Empresa<select formControlName="company">
+            <option>Planta de Triturado</option>
+            <option>Comercializadora</option>
+          </select></label
+        ><label
+          >Planta<select formControlName="plant">
+            <option>Planta Principal</option>
+            <option>Planta El Encano</option>
+          </select></label
+        ><label>Fecha<input type="date" formControlName="date" /></label
+        ><label>Valor total (COP)<input type="number" formControlName="amount" min="1" /></label
+        ><label>Cantidad (m³)<input type="number" formControlName="quantity" min="1" /></label>
+      </div>
+      <label
+        >Estado<select formControlName="status">
+          <option>Pendiente</option>
+          <option>En proceso</option>
+          <option>Completada</option>
+          <option>Programada</option>
+        </select></label
+      ><label class="checkbox"
+        ><input type="checkbox" formControlName="accepted" /> Confirmo que revisé los datos del
+        registro.</label
+      >
+      @if (form.touched && form.invalid) {
+        <p class="negative" role="alert">
+          Completa los campos, usa valores mayores que cero y confirma la revisión.
+        </p>
+      }
+      <div class="actions">
+        <button type="button" (click)="closed.emit()">Cancelar</button
+        ><button class="primary" type="submit">Guardar registro</button>
+      </div>
+    </form>
+  </section>
+</div>

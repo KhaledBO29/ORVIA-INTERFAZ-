@@ -1,0 +1,144 @@
+:host {
+  display: block;
+  height: 100%;
+}
+aside {
+  width: 216px;
+  height: 100%;
+  min-height: 100dvh;
+  background: #0e0b25;
+  color: #b9b5cc;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 14px 16px;
+  transition: width 0.2s;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 30px;
+  color: white;
+}
+.brand svg {
+  width: 35px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.brand strong {
+  font-size: 25px;
+  letter-spacing: 0.6px;
+  font-family: Manrope, Arial, sans-serif;
+}
+.brand small {
+  font-size: 7px;
+  display: block;
+  margin-top: 2px;
+  color: #c8c0de;
+  white-space: nowrap;
+}
+.workspace-label {
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  color: #706784;
+  padding: 0 12px 15px;
+}
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+nav a {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+nav a:hover {
+  background: #211a3c;
+  color: white;
+}
+nav a.active {
+  background: linear-gradient(100deg, #7544ea, #6333e9);
+  color: white;
+  box-shadow: 0 4px 13px #0002;
+}
+nav b {
+  background: #ffffff20;
+  font-size: 9px;
+  margin-left: auto;
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 25px;
+}
+.plant {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  background: #ffffff05;
+  border: 1px solid #ffffff09;
+  padding: 12px 8px;
+  border-radius: 7px;
+  font-size: 9px;
+}
+.plant small {
+  display: block;
+  margin-top: 5px;
+  font-size: 8px;
+  color: #777087;
+}
+.plant-dot {
+  background: #44cda0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.collapse-button {
+  background: none;
+  border: 0;
+  color: #aaa2c1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  font-size: 10px;
+}
+.collapsed {
+  width: 74px;
+  padding-inline: 10px;
+}
+.collapsed .brand {
+  padding-inline: 8px;
+}
+.collapsed .brand span,
+.collapsed .workspace-label,
+.collapsed nav span,
+.collapsed nav b,
+.collapsed .plant,
+.collapsed .collapse-button span {
+  display: none;
+}
+.collapsed nav a {
+  justify-content: center;
+  padding: 0;
+}
+.collapsed .brand svg {
+  width: 32px;
+}
+.collapsed .sidebar-bottom {
+  padding: 0;
+}
+@media (max-width: 700px) {
+  aside {
+    width: 216px;
+  }
+  .collapsed {
+    width: 216px;
+  }
+}
