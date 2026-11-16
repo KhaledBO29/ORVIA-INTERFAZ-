@@ -1,5 +1,5 @@
 {
-  "git-graph.graph.colours": ["#00e5ff", "#00ff66", "#ff00dd"],
+  "git-graph.graph.colours": ["#00ff66", "#00e5ff", "#ff00dd"],
   "git-graph.graph.style": "rounded",
   "git-graph.repository.commits.order": "date",
   "git-graph.referenceLabels.combineLocalAndRemoteBranchLabels": true
