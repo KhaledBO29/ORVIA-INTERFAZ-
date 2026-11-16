@@ -1,0 +1,35 @@
+<aside [class.collapsed]="collapsed()">
+  <a routerLink="/inicio" class="brand" aria-label="ORVIA Inicio" (click)="navigated.emit()"
+    ><svg viewBox="0 0 40 44" aria-hidden="true">
+      <path d="M20 1 38 11v22L20 43 2 33V11Z" fill="#8054ef" />
+      <path d="m20 1 18 10-18 11L2 11Z" fill="#bba2ff" />
+      <path d="M20 22v21L2 33V11Z" fill="#6340c6" />
+      <path d="m20 12 9 5v11l-9 5-9-5V17Z" fill="#15102e" />
+      <path d="M20 12v10l9-5 M20 22l-9-5" stroke="#bba2ff" fill="none" /></svg
+    ><span><strong>ORVIA</strong><small>Sistema Operativo Empresarial</small></span></a
+  >
+  <div class="workspace-label">ESPACIO DE TRABAJO</div>
+  <nav aria-label="Navegación principal">
+    @for (section of sections; track section[0]) {
+      <a
+        [routerLink]="'/' + section[0]"
+        routerLinkActive="active"
+        (click)="navigated.emit()"
+        [attr.title]="section[1]"
+        ><app-icon [name]="section[2]" /><span>{{ section[1] }}</span>
+        @if (section[0] === 'solicitudes') {
+          <b>4</b>
+        }
+      </a>
+    }
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="plant">
+      <span class="plant-dot"></span>
+      <div>ORVIA · Planta principal<small>Plan empresarial · Demo</small></div>
+    </div>
+    <button (click)="toggle.emit()" class="collapse-button">
+      <app-icon name="menu" /><span>{{ collapsed() ? 'Expandir menú' : 'Contraer menú' }}</span>
+    </button>
+  </div>
+</aside>
