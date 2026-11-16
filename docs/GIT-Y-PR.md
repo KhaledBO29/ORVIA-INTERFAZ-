@@ -21,7 +21,7 @@ El orden completo y los enlaces se encuentran en [ENTREGAS.md](ENTREGAS.md). Los
 git switch develop
 git pull --ff-only origin develop
 # Continúa la línea desde la última feature que ya se integró.
-git switch -c feature/28-mi-componente origin/feature/27-organizacion-historial
+git switch -c feature/29-mi-componente origin/feature/28-prueba-persistencia
 npx ng generate component shared/mi-componente --skip-tests
 ```
 
@@ -33,10 +33,10 @@ npm test
 git add src/app/shared/mi-componente
 # Agrega también los archivos del padre que hayas cambiado.
 git commit -m "Feat:Crear mi componente"
-git push -u origin feature/28-mi-componente
+git push -u origin feature/29-mi-componente
 ```
 
-Abre un PR en GitHub con **base: develop** y **compare: feature/28-mi-componente**. La plantilla aparece automáticamente. Usa el nombre real del componente en el título, describe cada archivo y registra la validación que sí ejecutaste. Las secciones Bug y Hotfix dicen “No aplica” si es una función nueva.
+Abre un PR en GitHub con **base: develop** y **compare: feature/29-mi-componente**. La plantilla aparece automáticamente. Usa el nombre real del componente en el título, describe cada archivo y registra la validación que sí ejecutaste. Las secciones Bug y Hotfix dicen “No aplica” si es una función nueva.
 
 Comprueba Files changed y los checks. Como trabajas solo, no inventes la aprobación de otro integrante. Si las reglas permiten integrar tu PR, elige **Create a merge commit**. Después:
 

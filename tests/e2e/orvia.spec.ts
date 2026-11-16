@@ -81,6 +81,20 @@ test('TaskFlow permite crear, avanzar y completar tareas con checkbox', async ({
   await task.getByRole('button', { name: 'Iniciar tarea' }).click();
   await expect(page.locator('.column').nth(1)).toContainText('Coordinar volqueta de prueba');
   await task.getByRole('checkbox').check();
+  // El checkbox nativo cambia antes de que Angular renderice y su efecto guarde.
+  // Esperamos la condición real de persistencia antes de simular la recarga.
+  await expect(task).toHaveClass(/completed/);
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const tasks = JSON.parse(localStorage.getItem('orvia.tasks.v1') ?? '[]');
+        return tasks.find(
+          (task: { title: string; status: string }) =>
+            task.title === 'Coordinar volqueta de prueba',
+        )?.status;
+      }),
+    )
+    .toBe('Completada');
   await page.reload();
   task = page.locator('.task').filter({ hasText: 'Coordinar volqueta de prueba' });
   await expect(task).toHaveClass(/completed/);
