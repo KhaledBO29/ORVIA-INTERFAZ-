@@ -1,0 +1,62 @@
+<div class="page-intro">
+  <div>
+    <h1>TaskFlow</h1>
+    <p>Organiza el trabajo de tus plantas, una tarea a la vez.</p>
+  </div>
+  <span class="badge success">{{ completed() }} / {{ store.tasks().length }} completadas</span>
+</div>
+<form class="card task-form" (submit)="add($event)">
+  <label for="task-title">¿Qué necesitas hacer?</label>
+  <div>
+    <input
+      id="task-title"
+      placeholder="Ej. Confirmar despacho de arena triturada"
+      maxlength="180"
+      [value]="draft()"
+      (input)="updateDraft($event)"
+    /><button class="primary" type="submit" [disabled]="!draft().trim()">
+      <app-icon name="plus" /> Añadir tarea
+    </button>
+  </div>
+</form>
+<div class="board">
+  @for (column of columns; track column) {
+    <section class="column">
+      <div class="column-title">
+        <span
+          class="dot"
+          [ngClass]="{ done: column === 'Completada', progress: column === 'En proceso' }"
+        ></span>
+        <h2>{{ column }}</h2>
+        <b>{{ byStatus(column).length }}</b>
+      </div>
+      @for (task of byStatus(column); track task.id) {
+        <article class="card task" [ngClass]="{ completed: task.status === 'Completada' }">
+          <label
+            ><input
+              type="checkbox"
+              [checked]="task.status === 'Completada'"
+              (change)="toggle(task.id, $event)"
+            /><span>{{ task.title }}</span></label
+          >
+          <div class="task-bottom">
+            <span class="badge">Operaciones</span
+            ><button aria-label="Eliminar tarea" (click)="remove(task.id)">
+              <app-icon name="close" />
+            </button>
+          </div>
+          @if (task.status === 'Pendiente') {
+            <button class="move" (click)="move(task.id, 'En proceso')">Iniciar tarea →</button>
+          }
+          @if (task.status === 'En proceso') {
+            <button class="move" (click)="move(task.id, 'Completada')">Completar tarea →</button>
+          }
+        </article>
+      }
+      @if (!byStatus(column).length) {
+        <p class="empty">Sin tareas en esta columna.</p>
+      }
+    </section>
+  }
+</div>
+<p class="task-note">Tus tareas se guardan automáticamente en este navegador.</p>
