@@ -1,6 +1,6 @@
 # Ramas y pull requests para un solo integrante
 
-`main` conserva su publicación parcial, `develop` reúne el frontend y las ramas `feature/NN-nombre` forman una cadena continua de componentes. Cada feature nueva parte de la última feature integrada y tiene su propio commit de implementación. Los componentes reutilizables van primero, las pantallas después y el ensamblaje al final.
+El orden visual es **main (verde), develop (cian), features (rosado)**. El flujo de integración es **feature → develop → main**. Main recibe publicaciones de develop; las features no deben abrir nuevos PR directamente a main. Las ramas `feature/NN-nombre` forman una cadena continua de componentes. Cada feature nueva parte de la última feature integrada y tiene su propio commit de implementación.
 
 El merge de cada PR agrega además un commit de integración. Ese commit de merge no es otro cambio del componente: conserva la separación visual de las ramas como en la captura de referencia. No uses squash ni rebase si quieres mantener ese gráfico. Las features se conservan tras integrarlas.
 
@@ -21,7 +21,7 @@ El orden completo y los enlaces se encuentran en [ENTREGAS.md](ENTREGAS.md). Los
 git switch develop
 git pull --ff-only origin develop
 # Continúa la línea desde la última feature que ya se integró.
-git switch -c feature/28-mi-componente origin/feature/27-organizacion-historial
+git switch -c feature/30-mi-componente origin/feature/29-orden-colores-gitflow
 npx ng generate component shared/mi-componente --skip-tests
 ```
 
@@ -33,10 +33,10 @@ npm test
 git add src/app/shared/mi-componente
 # Agrega también los archivos del padre que hayas cambiado.
 git commit -m "Feat:Crear mi componente"
-git push -u origin feature/28-mi-componente
+git push -u origin feature/30-mi-componente
 ```
 
-Abre un PR en GitHub con **base: develop** y **compare: feature/28-mi-componente**. La plantilla aparece automáticamente. Usa el nombre real del componente en el título, describe cada archivo y registra la validación que sí ejecutaste. Las secciones Bug y Hotfix dicen “No aplica” si es una función nueva.
+Abre un PR en GitHub con **base: develop** y **compare: feature/30-mi-componente**. La plantilla aparece automáticamente. Usa el nombre real del componente en el título, describe cada archivo y registra la validación que sí ejecutaste. Las secciones Bug y Hotfix dicen “No aplica” si es una función nueva.
 
 Comprueba Files changed y los checks. Como trabajas solo, no inventes la aprobación de otro integrante. Si las reglas permiten integrar tu PR, elige **Create a merge commit**. Después:
 
@@ -60,7 +60,7 @@ El primer comando resume archivos, el segundo abre una versión histórica y el 
 
 ## Llevar una versión a main
 
-La integración del frontend queda en develop. Main conserva la publicación parcial que ya existía. Para publicar una entrega estable posterior, abre un PR `develop → main`, revisa los cambios y valida antes de integrarlo.
+Primero integra la feature mediante PR a develop. Cuando termine la validación, abre otro PR con **base: main** y **compare: develop**, y usa Create a merge commit. Este segundo PR publica la versión completa y mantiene los carriles main y develop separados. Evita squash, rebase o un PR directo de feature a main si quieres conservar este orden.
 
 ## Gráfico continuo y colores
 
@@ -68,6 +68,6 @@ El 16 de noviembre de 2026 se reorganizaron los padres de los commits publicados
 
 El respaldo completo anterior a la reorganización está fuera del repositorio: `../ORVIA-historial-original-20261116.bundle`. Puede inspeccionarse sin alterar este proyecto mediante `git clone ../ORVIA-historial-original-20261116.bundle ../orvia-historial-original`.
 
-`.vscode/settings.json` configura Git Graph con cian, verde y rosado, curvas suaves y orden por fecha. Los colores corresponden a los carriles que dibuja el visor; Git no almacena un color como propiedad de una rama. Las conexiones entre carriles representan integraciones reales. Main tiene menos recorrido porque su publicación es parcial.
+`.vscode/settings.json` configura Git Graph con **verde primero, cian segundo y rosado tercero**, curvas suaves y orden por fecha. El merge final de develop a main coloca la publicación en primer lugar; sus primeros padres conservan la línea de main, los de develop conservan la segunda línea y las features encadenadas conservan la tercera. Git Graph asigna los colores por carril, no por nombre de rama. El recorrido exacto puede variar si filtras ramas, cambias el orden o tienes commits nuevos todavía sin integrar. Las conexiones entre carriles representan integraciones reales.
 
 Abre Git Graph, muestra todas las ramas y pulsa Refresh. Si había un orden personalizado en ese repositorio, selecciona Commit Order → Date Order desde el menú del encabezado para aplicar el orden configurado. Conserva las features integradas y crea la siguiente desde la última feature, como en el ejemplo anterior, para prolongar el carril.
