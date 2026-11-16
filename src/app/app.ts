@@ -1,3 +1,20 @@
-import { Component } from '@angular/core';
-@Component({selector:'app-root',template:'<main style="padding:40px"><h1>ORVIA</h1><p>Base Angular preparada. Los componentes se ensamblan en la entrega 25.</p></main>'})
-export class App {}
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Sidebar } from './layout/sidebar/sidebar';
+import { Header } from './layout/header/header';
+import { Store } from './core/store';
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, Sidebar, Header],
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
+})
+export class App {
+  readonly store = inject(Store);
+  readonly collapsed = signal(false);
+  readonly mobileOpen = signal(false);
+  toggle() {
+    if (window.innerWidth <= 700) this.mobileOpen.update((v) => !v);
+    else this.collapsed.update((v) => !v);
+  }
+}
