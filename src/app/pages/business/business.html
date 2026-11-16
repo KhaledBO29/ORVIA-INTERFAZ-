@@ -1,0 +1,185 @@
+<nav class="tabs" aria-label="Secciones del módulo">
+  <span class="active tab-label">Resumen</span><a routerLink="/ordenes-compra">Órdenes de compra</a
+  ><a routerLink="/recepciones">Recepciones</a><a routerLink="/proveedores">Proveedores</a
+  ><a routerLink="/solicitudes">Solicitudes</a
+  ><a routerLink="/cuentas-por-pagar">Cuentas por pagar</a><a routerLink="/pagos">Pagos</a
+  ><a routerLink="/reportes">Reportes</a>
+</nav>
+<div class="page-intro">
+  <div>
+    <h1>{{ title() }}</h1>
+    <p>Controla tus operaciones, materiales y movimientos en un solo lugar.</p>
+  </div>
+  <button class="primary new-button" (click)="form.set(true)">
+    <app-icon name="plus" /> Nuevo registro
+  </button>
+</div>
+@if (notice()) {
+  <p class="notice" role="status">{{ notice() }}</p>
+}
+<section class="metrics five">
+  @for (metric of metrics(); track metric.label) {
+    <app-stat-card [metric]="metric" />
+  }
+</section>
+@if (!listFirst()) {
+  <div class="grid-panels">
+    <app-chart
+      [title]="title() + ' vs. mes anterior'"
+      [total]="store.total()"
+      [bars]="mode() === 'finanzas' || mode() === 'pagos'"
+    />
+    <section class="card panel">
+      <div class="card-head">
+        <h2>
+          {{ mode() === 'inventario' ? 'Inventario por material' : 'Distribución por material' }}
+        </h2>
+      </div>
+      <div class="donut-wrap">
+        <div
+          class="donut"
+          role="img"
+          aria-label="Distribución demostrativa: Triturado 38,4%, base granular 26,7%, arena 20,7%, otros 14,2%"
+        >
+          <div>
+            <small>Total del período</small
+            ><strong>{{
+              store.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong
+            ><small>COP</small>
+          </div>
+        </div>
+      </div>
+      <div class="category-list">
+        @for (category of categories; track category[0]) {
+          <div>
+            <span class="dot" [style.background]="category[2]"></span>{{ category[0]
+            }}<b>{{ category[1] }}</b>
+          </div>
+        }
+      </div>
+      <small class="demo-label">Distribución ilustrativa de demostración</small>
+    </section>
+    <section class="card panel">
+      <div class="card-head">
+        <h2>Resumen rápido</h2>
+        <span class="badge success">En vivo</span>
+      </div>
+      <div class="summary-line">
+        <span>Total del período</span
+        ><strong>{{
+          store.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+        }}</strong>
+      </div>
+      <div class="summary-line">
+        <span>Registros disponibles</span><strong>{{ store.filtered().length }}</strong>
+      </div>
+      <div class="summary-line">
+        <span>Operaciones completadas</span
+        ><strong class="positive">{{ metrics()[2].value }}</strong>
+      </div>
+      <div class="summary-line">
+        <span>Pendientes de revisión</span
+        ><strong class="negative">{{ metrics()[4].value }}</strong>
+      </div>
+      <div class="summary-line">
+        <span>Empresa</span><strong>{{ store.company() }}</strong>
+      </div>
+      <div class="summary-line">
+        <span>Sucursal</span><strong>{{ store.plant() }}</strong>
+      </div>
+      <a routerLink="/taskflow" class="task-link">Organizar mis tareas <app-icon name="arrow" /></a>
+    </section>
+  </div>
+} @else {
+  <div class="list-tabs">
+    @for (status of ['Todos', 'Pendiente', 'En proceso', 'Completada', 'Vencida']; track status) {
+      <button [class.active]="activeStatus() === status" (click)="activeStatus.set(status)">
+        {{ status }}
+      </button>
+    }
+  </div>
+  <section class="card operation-summary">
+    <div>
+      <small>VOLUMEN TOTAL RESERVADO</small><strong>{{ quantity() }} m³</strong>
+    </div>
+    <div>
+      <small>OPERACIONES POR RECIBIR</small><strong>{{ pending().length }}</strong>
+    </div>
+    <div>
+      <small>VALOR DE LA SELECCIÓN</small
+      ><strong>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
+    </div>
+    <a routerLink="/taskflow">Organizar seguimiento →</a>
+  </section>
+}
+@if (mode() === 'reportes') {
+  <section class="card report-banner">
+    <app-icon name="truck" />
+    <div>
+      <h2>Despachos de material y salidas de volquetas</h2>
+      <p>
+        {{ quantity() }} m³ registrados · {{ rows().length }} movimientos. Descarga el detalle con
+        Exportar CSV.
+      </p>
+    </div>
+  </section>
+}
+<app-data-table
+  [title]="'Listado de ' + title().toLowerCase()"
+  [rows]="rows()"
+  (selected)="selected.set($event)"
+/>
+@if (form()) {
+  <app-record-form
+    [title]="'Nuevo registro · ' + title()"
+    (closed)="form.set(false)"
+    (saved)="saved()"
+  />
+}
+@if (selected(); as row) {
+  <div class="detail-backdrop" (click)="selected.set(null)" (keydown.escape)="selected.set(null)">
+    <section
+      class="card detail"
+      appDialogFocus
+      (dismissed)="selected.set(null)"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detail-title"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="card-head">
+        <h1 id="detail-title">Detalle del registro</h1>
+        <button aria-label="Cerrar detalle" (click)="selected.set(null)">
+          <app-icon name="close" />
+        </button>
+      </div>
+      <p class="detail-id">{{ row.id }}</p>
+      @for (
+        item of [
+          ['Proveedor / Cliente', row.name],
+          ['Material', row.detail],
+          ['Planta', row.plant],
+          ['Empresa', row.company],
+          ['Estado', row.status],
+          ['Cantidad', row.quantity + ' m³'],
+          ['Fecha', row.date],
+        ];
+        track item[0]
+      ) {
+        <div class="summary-line">
+          <span>{{ item[0] }}</span
+          ><strong>{{ item[1] }}</strong>
+        </div>
+      }
+      <div class="summary-line">
+        <span>Valor total</span
+        ><strong>{{ row.amount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
+      </div>
+      <button class="primary" [disabled]="row.status === 'Completada'" (click)="complete()">
+        Marcar como completado
+      </button>
+    </section>
+  </div>
+}
