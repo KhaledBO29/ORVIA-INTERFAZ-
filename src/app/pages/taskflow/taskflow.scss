@@ -1,0 +1,122 @@
+.task-form {
+  padding: 22px;
+  margin-bottom: 25px;
+}
+.task-form label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.task-form > div {
+  display: flex;
+  gap: 12px;
+}
+.task-form input {
+  flex: 1;
+}
+.task-form button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.task-form app-icon {
+  width: 15px;
+  height: 15px;
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.column {
+  background: #f0eef6;
+  border: 1px solid #e9e5f2;
+  border-radius: 9px;
+  padding: 15px;
+  min-height: 350px;
+}
+.column-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 19px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  background: var(--amber);
+  border-radius: 50%;
+}
+.dot.done {
+  background: var(--green);
+}
+.dot.progress {
+  background: var(--purple);
+}
+.column-title b {
+  margin-left: auto;
+  color: #aaa1bb;
+  font-size: 11px;
+}
+.task {
+  padding: 17px;
+  margin-bottom: 12px;
+}
+.task label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.task input {
+  flex-shrink: 0;
+}
+.completed label span {
+  text-decoration: line-through;
+  color: #9c94ac;
+}
+.task-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 17px;
+}
+.task-bottom button {
+  border: 0;
+  padding: 3px;
+  color: #a69bb6;
+}
+.task-bottom app-icon {
+  width: 14px;
+  height: 14px;
+}
+.move {
+  margin-top: 15px;
+  border: 0;
+  background: #f7f4ff;
+  color: var(--purple);
+  font-size: 10px;
+  width: 100%;
+}
+.task-note {
+  font-size: 11px;
+  color: #9990a9;
+  margin-top: 20px;
+}
+@media (max-width: 800px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .column {
+    min-height: 150px;
+  }
+  .task-form > div {
+    flex-wrap: wrap;
+  }
+  .task-form input {
+    flex-basis: 100%;
+  }
+}
