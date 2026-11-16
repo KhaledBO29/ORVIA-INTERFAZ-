@@ -1,0 +1,92 @@
+.table-card {
+  padding: 19px 18px;
+}
+.table-scroll {
+  overflow: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  white-space: nowrap;
+  font-size: 10px;
+  text-align: left;
+}
+th {
+  font-size: 9px;
+  font-weight: 500;
+  color: #858196;
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--line);
+}
+td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f3f2f8;
+}
+td small {
+  display: block;
+  font-size: 9px;
+  margin-top: 6px;
+}
+.document {
+  color: #65508d;
+  font-weight: 500;
+}
+.company-avatar {
+  display: inline-grid;
+  place-items: center;
+  background: #f0ebfb;
+  color: #7550c9;
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  margin-right: 8px;
+  font-weight: 700;
+}
+.amount {
+  font-weight: 600;
+}
+.view {
+  font-size: 10px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.view app-icon {
+  width: 12px;
+  height: 12px;
+}
+.toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+}
+.toolbar select {
+  padding: 7px 9px;
+  font-size: 10px;
+}
+.toolbar app-icon {
+  width: 13px;
+  height: 13px;
+}
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+}
+.pagination div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pagination span {
+  background: var(--purple);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+.pagination button {
+  padding: 4px 10px;
+}
