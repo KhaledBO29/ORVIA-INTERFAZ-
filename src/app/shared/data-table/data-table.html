@@ -1,0 +1,86 @@
+<section class="card table-card">
+  <div class="card-head">
+    <h2>{{ title() }}</h2>
+    <div class="toolbar">
+      <label class="sr-only" for="table-status">Filtrar por estado</label
+      ><select id="table-status" [value]="status()" (change)="changeStatus($event)">
+        <option>Todos</option>
+        <option>Pendiente</option>
+        <option>En proceso</option>
+        <option>Completada</option>
+        <option>Vencida</option>
+        <option>Programada</option></select
+      ><button (click)="exportCsv()"><app-icon name="download" /> Exportar CSV</button>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Documento / Fecha</th>
+          <th>Proveedor / Cliente</th>
+          <th>Material</th>
+          <th>Planta</th>
+          <th>Cantidad</th>
+          <th>Estado</th>
+          <th>Total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of visible(); trackBy: trackRow">
+          <td>
+            <b class="document">{{ row.id }}</b
+            ><small>{{ row.date | date: 'dd/MM/yyyy' }}</small>
+          </td>
+          <td>
+            <span class="company-avatar">{{ row.name.slice(0, 1) }}</span
+            >{{ row.name }}
+          </td>
+          <td>{{ row.detail }}</td>
+          <td>
+            {{ row.plant }}<small>{{ row.company }}</small>
+          </td>
+          <td>{{ row.quantity }} m³</td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                success: row.status === 'Completada',
+                warning: row.status === 'Pendiente',
+                danger: row.status === 'Vencida',
+              }"
+              >{{ row.status }}</span
+            >
+          </td>
+          <td class="amount">
+            {{ row.amount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}
+          </td>
+          <td>
+            <button class="view" (click)="selected.emit(row)" [attr.aria-label]="'Ver ' + row.id">
+              Ver <app-icon name="arrow" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    @if (!visible().length) {
+      <p class="empty">No hay registros con los filtros seleccionados.</p>
+    }
+  </div>
+  <div class="pagination">
+    <small>{{ filtered().length }} registros · Página {{ page() }} de {{ pages() }}</small>
+    <div>
+      <button aria-label="Página anterior" [disabled]="page() === 1" (click)="page.set(page() - 1)">
+        ‹</button
+      ><span>{{ page() }}</span
+      ><button
+        aria-label="Página siguiente"
+        [disabled]="page() === pages()"
+        (click)="page.set(page() + 1)"
+      >
+        ›
+      </button>
+    </div>
+  </div>
+</section>
