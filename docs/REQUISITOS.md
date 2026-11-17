@@ -14,10 +14,12 @@
 | Condicionales | `record-form.html`, `business.html`, `dashboard.html` | Errores, diálogos y layouts condicionales. |
 | Directivas Angular | `routerLink`, `routerLinkActive`, `ngClass`, `ngFor`, `formControlName` | Revisar plantillas e imports. |
 | Directiva propia | `shared/dialog-focus.directive.ts` | Navegar un diálogo con Tab y Escape. |
-| Métodos | `addRecord`, `complete`, `exportCsv`, `submit`, `toggle` | Seguir llamadas desde los eventos HTML. |
+| Métodos | `create`, `advance`, `pay`, `saveParty`, `exportCsv`, `submit`, `toggle` | Seguir llamadas desde los eventos HTML. |
 | Eventos checkbox | `pages/taskflow/taskflow.html` | `[checked]` y `(change)` con `event.target.checked`. |
-| Checkbox reactivo | `record-form.html`, `settings.html` | `formControlName`, `requiredTrue`, valores booleanos. |
-| Formularios reactivos | `shared/record-form/`, `pages/settings/` | FormBuilder, ReactiveFormsModule y validadores. |
+| Checkbox reactivo | `settings.html` | `formControlName` y valores booleanos. |
+| Formularios reactivos | `pages/settings/` | FormBuilder, ReactiveFormsModule y validadores. |
+| Documentos con varias líneas | `shared/record-form/` | FormsModule, NgForm, ngModel y validación de dominio. |
+| Operación ERP relacional | `core/erp.ts`, `core/store.ts` | [Recorrido de compras, stock, ventas y pagos](ERP.md). |
 | Comunicación padre → hijo | StatCard, Chart, Business, Sidebar | `input()` y enlaces `[propiedad]`. |
 | Comunicación hijo → padre | DataTable, RecordForm, Header, Sidebar | `output()`, `emit()`, `$event`. |
 | Comunicación mediante servicio | Header → Store → páginas | Buscar un material desde el encabezado. |

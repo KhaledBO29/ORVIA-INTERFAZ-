@@ -8,6 +8,9 @@ export interface BusinessRecord {
   status: string;
   amount: number;
   quantity: number;
+  unit?: string;
+  incoming?: number;
+  average?: number;
 }
 export interface Task {
   id: string;

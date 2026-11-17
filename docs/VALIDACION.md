@@ -1,44 +1,25 @@
 # Alcance y validación
 
-## Qué se implementó
+La entrega relacional de ORVIA reemplaza la lista genérica compartida y los porcentajes fijos por documentos de negocio vinculados. Las reglas y el recorrido se detallan en [ERP.md](ERP.md).
 
-- Angular 21 con componentes standalone, rutas lazy y estilos SCSS adaptables.
-- Trece páginas referenciadas por el PDF y un tablero TaskFlow adicional.
-- Menú lateral, encabezado, filtros compartidos, tarjetas, gráficas SVG y tablas.
-- Creación de registros con validadores, confirmación por checkbox y diálogo de detalle.
-- Búsqueda, filtros por empresa/planta/estado, paginación y exportación CSV.
-- Cambio de estado a Completada; tareas con transiciones, checkbox y eliminación.
-- Persistencia local y recuperación ante JSON inválido; preferencias de configuración.
-- Foco contenido en los diálogos, Escape, restauración del foco y enlace para saltar al contenido.
-
-## Correspondencia con el PDF
-
-El documento contiene capturas rasterizadas, sin componentes editables ni tokens Figma. Se inspeccionaron sus 13 páginas como referencia visual; el documento se trata como material de diseño, no como instrucciones ejecutables.
-
-Se conservan la marca ORVIA, el menú oscuro, la selección violeta, tarjetas blancas, indicadores, gráficas, tablas y jerarquía de módulos. Se sustituyen productos textiles por triturado, base granular, arena y relleno. Los datos de fecha se sitúan en noviembre de 2026.
-
-Las páginas de negocio componen un panel configurable. Las pantallas con listados tienen una disposición distinta de los resúmenes. No se copian todos los subpaneles y columnas específicas del PDF: no hay fotos de volquetas, remisiones escaneadas, editor de proveedores, aprobación multinivel ni CRUD especializado por documento. Las tablas usan un registro operativo común. Los botones de creación comparten el formulario operativo.
-
-Esta entrega sirve como frontend educativo funcional y base para personalizar cada pantalla. No es una reproducción exacta de Figma ni un ERP listo para operar.
-
-## Datos y cálculos
-
-El total y los conteos se derivan de los registros filtrados. Los registros representan movimientos compartidos entre los módulos, sin libros contables separados. Los importes llamados utilidad o gastos en el inicio y algunos indicadores financieros usan proporciones de demostración. Las gráficas de evolución, porcentajes de variación, categorías y alertas no se calculan desde un historial de períodos anterior. Los conteos de proveedores o solicitudes representan registros de la demo, no entidades independientes.
-
-Todos los registros iniciales pertenecen a noviembre de 2026, de modo que los filtros Este mes y Todo el año coinciden inicialmente. Si creas una fila con fecha de otro mes, solo aparece al seleccionar Todo el año. La fecha de la demo está fijada para que el recorrido de aprendizaje sea reproducible.
-
-LocalStorage no es una base de datos de servidor, no sincroniza dispositivos y no proporciona cuentas de usuario. Los valores de Settings se guardan como preferencias: no cambian las integraciones ni los nombres del catálogo global.
+Se conserva la navegación lateral de 14 secciones y la apariencia de marca, menú oscuro, selección violeta, tarjetas, tablas y formularios adaptables. Cada sección consulta su propio tipo de entidad o documento. El stock muestra unidades correctas por producto, pedidos pendientes, costos promedio y kárdex. Los proveedores/clientes tienen un directorio editable y se relacionan con sus documentos.
 
 ## Comprobaciones
 
-- `npm run build`: compilación de producción.
-- `npm test`: nueve pruebas de extremo a extremo en Google Chrome.
-- Recorridos: todas las rutas, redirección desconocida, validación y creación, persistencia, paginación, filtros, CSV, completar registro, tareas, configuración, datos dañados, menú móvil y foco de diálogos.
-- Inspección visual de inicio y recepciones a 1440 px, y del inicio a 390 px. Capturas en `docs/capturas/`.
-- `npm audit --omit=dev`: cero vulnerabilidades en dependencias de producción durante la validación. El análisis completo de herramientas de desarrollo reportó avisos moderados; no se aplicó una actualización mayor que rompa el requisito de NgFor.
+- `npm run build`: compilación de producción con los presupuestos de Angular.
+- `npm test`: 21 pruebas automatizadas, con recorridos de navegador y reglas de dominio.
+- Compra mixta de diésel y banda con IVA por línea, retención y logística; recepción única, costo, stock y dos abonos hasta saldo cero.
+- Solicitudes y contador del menú; ventas con despacho/cobro único; bloqueo por stock insuficiente; cancelación antes de contabilizar.
+- Producción y consumo por planta; unidades; proveedores creados, editados e inactivados.
+- Filtros, paginación y contenido del CSV; preferencias efectivas y descarga de respaldo JSON.
+- Todas las rutas, recuperación de datos dañados, deuda de un período anterior, tareas, persistencia, teclado y menú móvil.
+- Asientos de los documentos iniciales y del recorrido de compra con débito igual a crédito; validación de NaN, duplicados, fechas y cantidades inválidas.
+- Inspección visual de escritorio a 1440 px y formulario móvil a 390 px.
 
-Para repetir: `npm ci`, `npm run build` y `npm test`. En Linux/macOS ejecuta antes `npx playwright install chromium`. El flujo de GitHub Actions instala Chromium con sus dependencias y ejecuta build y pruebas.
+Para repetir: `npm ci`, `npm run build` y `npm test`. En Windows las pruebas usan Chrome instalado; en Linux/macOS, `npx playwright install chromium`. El servidor de pruebas arranca sin apertura de navegador cuando no hay otro en el puerto 4200.
 
-## Reiniciar la demo
+## Límites
 
-En las herramientas de desarrollo del navegador, Application → Local Storage, elimina únicamente `orvia.records.v1`, `orvia.tasks.v1` y `orvia.settings.v1`. Recarga para volver a los valores iniciales. No es necesario borrar los datos de otros sitios.
+Los datos se guardan en este navegador. Es una simulación ERP, sin backend, sincronización multiusuario, facturación electrónica ni conexión bancaria. Los impuestos son supuestos configurables de demostración. Las recepciones son completas; no se implementan devoluciones, reversión de movimientos o liquidación fiscal. Consulta [las reglas y límites exactos](ERP.md).
+
+Las capturas de las primeras entregas y las ramas históricas muestran el alcance anterior. La guía por componentes permite estudiarlas; los archivos y reglas actuales se describen en ERP.md.
