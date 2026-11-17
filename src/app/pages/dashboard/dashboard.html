@@ -1,10 +1,10 @@
-<div class="page-intro">
+﻿<div class="page-intro">
   <div>
     <div class="eyebrow">TU EMPRESA, EN UN SOLO LUGAR</div>
-    <h1>¡Buenos días, Khaled! <span class="wave">☀</span></h1>
-    <p>Este es el estado actual de tu empresa.</p>
+    <h1>Operación de planta <span class="wave">☀</span></h1>
+    <p>Agregados, maquinaria y finanzas conectados.</p>
   </div>
-  <span class="today"><span></span> Domingo, 15 de noviembre de 2026</span>
+  <span class="today"><span></span>{{ date }}</span>
 </div>
 @if (notice()) {
   <p class="notice" role="status">{{ notice() }}</p>
@@ -15,44 +15,35 @@
   }
 </section>
 <div class="dashboard-grid">
-  <app-chart [total]="store.total()" />
+  <app-chart title="Ventas de contado confirmadas" [rows]="sales()" />
   <section class="card activity">
     <div class="card-head">
       <h2>Actividad reciente</h2>
-      <a routerLink="/finanzas">Ver todo →</a>
+      <a routerLink="/reportes">Ver todo →</a>
     </div>
-    @for (row of store.filtered().slice(0, 5); track row.id) {
+    @for (d of activity(); track d.id) {
       <div class="activity-row">
-        <span class="activity-icon"><app-icon [name]="$index % 2 === 0 ? 'cart' : 'box'" /></span>
+        <span class="activity-icon"><app-icon [name]="d.kind === 'venta' ? 'cart' : 'box'" /></span>
         <div>
-          <strong>{{ row.name }}</strong>
-          <p>{{ $index % 2 === 0 ? 'Registró una venta' : 'Actualizó una recepción' }}</p>
-          <small>{{ row.id }}</small>
+          <strong>{{ store.partyName(d.partyId) }}</strong>
+          <p>{{ labels[d.kind] }} · {{ d.status }}</p>
+          <small>{{ d.id }}</small>
         </div>
-        <b [class.negative]="$index % 2 !== 0">{{
-          row.amount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+        <b [class.negative]="d.kind === 'pago' || d.kind === 'gasto'">{{
+          (d.lines.length ? quote(d).total : d.amount)
+            | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
         }}</b>
       </div>
-    }
-    @if (!store.filtered().length) {
+    } @empty {
       <p class="empty">No hay actividad para estos filtros.</p>
     }
   </section>
   <section class="card attention">
     <div class="card-head">
       <h2>Requiere tu atención</h2>
-      <a routerLink="/taskflow">Ver todo →</a>
+      <a routerLink="/taskflow">Ver tareas →</a>
     </div>
-    @for (
-      alert of [
-        ['3 facturas vencidas', 'Total: $2.450.000 COP', 'cuentas-por-pagar', 'wallet'],
-        ['5 materiales con existencias bajas', 'Requieren reposición', 'inventario', 'box'],
-        ['1 diferencia de caja', 'Total: $350.000 COP', 'finanzas', 'bank'],
-        ['2 gastos pendientes de aprobación', 'Total: $6.800.000 COP', 'solicitudes', 'file'],
-        ['1 recepción en proceso', 'Planta Principal · 35 m³', 'recepciones', 'truck'],
-      ];
-      track alert[0]
-    ) {
+    @for (alert of alerts(); track alert[0]) {
       <a class="alert-row" [routerLink]="'/' + alert[2]"
         ><span class="alert-icon" [class.amber]="$index % 2 !== 0"
           ><app-icon [name]="alert[3]"
@@ -69,21 +60,26 @@
 <section class="card quick-actions">
   <div class="card-head">
     <h2>Acciones rápidas</h2>
-    <span class="muted">Todo lo que necesitas, a un clic</span>
+    <span class="muted">Operaciones conectadas</span>
   </div>
   <div class="action-list">
     @for (action of actions; track action[0]) {
-      <button (click)="form.set(action[0])">
+      <button (click)="form.set(action[2])">
         <app-icon [name]="action[1]" /><span>{{ action[0] }}</span>
       </button>
     }
-    <a routerLink="/taskflow" class="more"><span>···</span>Ver más acciones</a>
+    <a routerLink="/taskflow" class="more"><span>···</span>Organizar tareas</a>
   </div>
 </section>
 <div class="dashboard-foot">
-  <span><span class="live-dot"></span> Información de demostración · Guardado local</span
-  ><span>ORVIA · Construyendo el futuro de tu negocio</span>
+  <span><span class="live-dot"></span> Simulación ERP · Guardado en este navegador</span
+  ><span>ORVIA · Operación de triturados y agregados</span>
 </div>
 @if (form()) {
-  <app-record-form [title]="form()" (closed)="form.set('')" (saved)="saved()" />
+  <app-record-form
+    [title]="form() === 'clientes' ? 'Nuevo cliente' : 'Nueva operación de planta'"
+    [mode]="form()"
+    (closed)="form.set('')"
+    (saved)="saved()"
+  />
 }

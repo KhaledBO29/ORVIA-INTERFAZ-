@@ -2,6 +2,8 @@
 
 Este recorrido está pensado para una sola persona. Lee un capítulo, abre los archivos indicados, realiza el ejercicio y comprueba el resultado antes de continuar. Puedes estudiar cada entrega con su rama sin cambiar el proyecto actual: `git show feature/02-iconos:src/app/shared/icon/icon.ts`.
 
+**Versión de la guía:** los capítulos siguientes explican las primeras 26 entregas y sus ejemplos históricos. Desde la entrega 31, Store contiene documentos vinculados, Chart recibe filas reales y RecordForm utiliza NgForm para líneas dinámicas; Settings mantiene los formularios reactivos. Para el código actual consulta [la arquitectura, reglas y recorrido ERP](ERP.md). Las ramas históricas permiten reproducir los ejemplos originales sin modificar la publicación actual.
+
 Para experimentar en una rama histórica usa un directorio separado: `git worktree add ../orvia-estudio feature/02-iconos`. El ensamblaje completo se conecta al final, en la rama 25. Las ramas anteriores contienen componentes añadidos a la base, aunque todavía no estén montados en la interfaz inicial.
 
 ## 0. Qué estás construyendo

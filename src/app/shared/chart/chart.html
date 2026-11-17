@@ -1,77 +1,59 @@
-<article class="card chart">
+﻿<article class="card chart">
   <div class="card-head">
     <h2>{{ title() }}</h2>
-    <span class="muted">Noviembre 2026</span>
+    <span class="muted">Por fecha de emisión</span>
   </div>
-  <div class="legend"><span>● Este mes</span><span>● Mes anterior</span></div>
-  <div class="plot">
-    <div class="axis">
-      <span>{{ total() / 6 | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</span
-      ><span>{{ total() / 12 | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</span
-      ><span>$0</span>
+  <div class="legend"><span>● Importes netos de los documentos seleccionados</span></div>
+  @if (daily().length) {
+    <div class="plot">
+      <div class="axis">
+        <span>{{ maximum() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</span
+        ><span>{{ maximum() / 2 | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</span
+        ><span>$0</span>
+      </div>
+      <svg viewBox="0 0 500 220" role="img" [attr.aria-label]="title()">
+        <path d="M20 30H480 M20 110H480 M20 190H480" stroke="#eeedf4" stroke-dasharray="3 4" />
+        @if (!bars()) {
+          <polyline [attr.points]="points()" fill="none" stroke="#8054ef" stroke-width="2.3" />
+        }
+        @for (d of daily(); track d.date; let i = $index) {
+          @if (bars()) {
+            <rect
+              [attr.x]="x(i) - 6"
+              [attr.y]="y(d.value)"
+              width="12"
+              [attr.height]="190 - y(d.value)"
+              rx="3"
+              fill="#9f7aee"
+            >
+              <title>
+                {{ d.date }} · {{ d.value | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}
+              </title>
+            </rect>
+          } @else {
+            <circle [attr.cx]="x(i)" [attr.cy]="y(d.value)" r="5" fill="#8054ef">
+              <title>
+                {{ d.date }} · {{ d.value | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}
+              </title>
+            </circle>
+          }
+        }
+      </svg>
     </div>
-    <svg
-      viewBox="0 0 500 220"
-      role="img"
-      [attr.aria-label]="title() + ': comparación de valores del período'"
-    >
-      <defs>
-        <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
-          <stop stop-color="#8054ef" stop-opacity=".2" />
-          <stop offset="1" stop-color="#8054ef" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M20 40H480 M20 90H480 M20 140H480 M20 190H480"
-        stroke="#eeedf4"
-        stroke-dasharray="3 4"
-      />
-      <polyline
-        points="20,165 50,150 80,158 110,130 140,140 170,157 200,135 230,145 260,105 290,130 320,136 350,155 380,140 410,150 440,130 470,143"
-        fill="none"
-        stroke="#f49abb"
-        stroke-width="2"
-      />
-      @if (bars()) {
-        @for (value of values(); track $index) {
-          <rect
-            [attr.x]="15 + $index * 30"
-            [attr.y]="190 - (value / (total() || 1)) * 900"
-            width="9"
-            [attr.height]="(value / (total() || 1)) * 900"
-            rx="4"
-            fill="#b79bf8"
-          />
-        }
-      } @else {
-        <polygon [attr.points]="'20,190 ' + points() + ' 470,190'" fill="url(#area)" />
-        <polyline [attr.points]="points()" fill="none" stroke="#8054ef" stroke-width="2.3" />
-        @for (value of values(); track $index) {
-          <circle
-            [attr.cx]="20 + $index * 30"
-            [attr.cy]="190 - (value / (total() || 1)) * 900"
-            r="3"
-            fill="#8054ef"
-          >
-            <title>{{ value | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</title>
-          </circle>
-        }
-      }
-    </svg>
-  </div>
-  <div class="dates">
-    <span>1 Nov</span><span>3 Nov</span><span>6 Nov</span><span>9 Nov</span><span>12 Nov</span
-    ><span>15 Nov</span>
-  </div>
+    <div class="dates">
+      <span>{{ daily()[0].date }}</span
+      ><span>{{ daily()[daily().length - 1].date }}</span>
+    </div>
+  } @else {
+    <p class="empty">Sin documentos confirmados en este período.</p>
+  }
   <div class="chart-footer">
     <span
-      >Total del período<strong>{{
+      >Total de documentos<strong>{{
         total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
       }}</strong></span
     ><span
-      >Promedio por día<strong>{{
-        total() / 15 | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
-      }}</strong></span
+      >Días con operación<strong>{{ daily().length }}</strong></span
     >
   </div>
 </article>

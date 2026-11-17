@@ -1,4 +1,4 @@
-<article class="card stat">
+﻿<article class="card stat">
   <div class="stat-top">
     <span class="stat-icon" [ngClass]="metric().tone || 'purple'"
       ><app-icon [name]="metric().icon" /></span
@@ -14,20 +14,9 @@
   </div>
   <div class="stat-bottom">
     <div>
-      <b [ngClass]="metric().tone === 'pink' ? 'negative' : 'positive'">{{ metric().change }}</b
-      ><small>Vs. mes anterior</small>
+      <b [ngClass]="metric().tone === 'pink' ? 'negative' : 'positive'">{{
+        metric().change
+      }}</b><small>Datos de la operación</small>
     </div>
-    <svg viewBox="0 0 130 44" aria-hidden="true">
-      <path
-        d="M0 34 10 28 20 32 30 22 40 27 50 32 60 20 70 23 80 14 90 19 100 15 110 3 120 10 130 4V44H0Z"
-        fill="#f2edff"
-      />
-      <path
-        d="m0 34 10-6 10 4 10-10 10 5 10 5 10-12 10 3 10-9 10 5 10-4 10-12 10 7 10-6"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-      />
-    </svg>
   </div>
 </article>

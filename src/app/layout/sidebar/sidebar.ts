@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { Store } from '../../core/store';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Icon } from '../../shared/icon/icon';
 import { sections } from '../../core/models';
@@ -9,6 +10,7 @@ import { sections } from '../../core/models';
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
+  readonly store = inject(Store);
   readonly collapsed = input(false);
   readonly navigated = output<void>();
   readonly toggle = output<void>();
