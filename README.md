@@ -62,4 +62,4 @@ Es un frontend con contabilidad interna **simulada**, sin backend, autenticació
 
 Las fuentes de Google son opcionales; existe una alternativa local Arial. Los iconos y el logo se dibujan con SVG locales.
 
-Desarrollador: **Khaled Benavides**. El orden del gráfico es **main verde → develop cian → features rosadas**. Las features se encadenan desde la anterior, se integran mediante PR a develop y luego se publica develop en main mediante otro PR. Consulta [el flujo y sus colores](docs/GIT-Y-PR.md).
+Desarrollador: **Khaled Benavides**. El orden del gráfico es **main cian → develop rosado → features verdes**. Las features se encadenan desde la anterior, se integran mediante PR a develop y luego se publica develop en main mediante otro PR. Consulta [el flujo y sus colores](docs/GIT-Y-PR.md).
