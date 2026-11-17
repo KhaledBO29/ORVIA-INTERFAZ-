@@ -11,7 +11,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm start -- --host 127.0.0.1',
+    command: 'npm run start:headless -- --host 127.0.0.1',
     url: 'http://127.0.0.1:4200',
     reuseExistingServer: !process.env['CI'],
     timeout: 60_000,
