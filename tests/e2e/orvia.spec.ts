@@ -6,6 +6,7 @@ const state = (page: Page) =>
 async function save(page: Page) {
   await dialog(page).getByRole('checkbox', { name: 'Confirmo que revisé los datos.' }).check();
   await dialog(page).getByRole('button', { name: 'Guardar registro', exact: true }).click();
+  await expect(dialog(page)).toHaveCount(0);
 }
 async function openId(page: Page, id: string) {
   await page.getByRole('button', { name: 'Ver ' + id, exact: true }).click();
@@ -280,7 +281,11 @@ test('proveedores se crean, se editan y se inactivan sin borrar su historial', a
   await dialog(page).getByLabel('Especialidad').fill('Mallas de vibración');
   await save(page);
   await page.getByRole('textbox', { name: 'Buscar registros' }).fill('Mallas del Sur');
-  await page.locator('tbody').getByRole('button').click();
+  await page
+    .locator('tbody tr')
+    .filter({ hasText: 'Mallas del Sur E2E' })
+    .getByRole('button')
+    .click();
   await dialog(page).getByRole('button', { name: 'Editar proveedor' }).click();
   const edit = page.getByRole('dialog', { name: 'Editar proveedor', exact: true });
   await edit.getByLabel('Razón social').fill('Mallas Andinas E2E');
