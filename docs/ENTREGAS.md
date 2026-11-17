@@ -36,6 +36,7 @@ Las entregas tienen su rama feature y conservan las referencias después de inte
 | 30 | feature/30-arranque-portable | Fix:Facilitar arranque desde una copia limpia del repositorio | Merge explícito a develop y luego a main, sin PR |
 | 31 | feature/31-erp-relacional | Feat:Conectar operacion ERP de triturados inventario y contabilidad | Merge explícito a develop y luego a main, sin PR; [reglas y recorrido](ERP.md) |
 | 32 | feature/32-colores-ramas | Fix:Configurar main cian develop rosado y features verdes | Merge explícito a develop y luego a main, sin PR; reemplaza la paleta de la entrega 29 |
+| 33 | feature/33-estabilidad-ci | Fix:Esperar cierre del editor de proveedores en CI | Merge explícito a develop y luego a main, sin PR; sincroniza la prueba y conserva diagnósticos de fallos |
 
 La entrega 27 configura Git Graph y documenta la organización continua: [ver su PR por rama](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pulls?q=is%3Apr+head%3Afeature%2F27-organizacion-historial).
 

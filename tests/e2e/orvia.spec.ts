@@ -282,12 +282,15 @@ test('proveedores se crean, se editan y se inactivan sin borrar su historial', a
   await page.getByRole('textbox', { name: 'Buscar registros' }).fill('Mallas del Sur');
   await page.locator('tbody').getByRole('button').click();
   await dialog(page).getByRole('button', { name: 'Editar proveedor' }).click();
-  const edit = page.getByRole('dialog').last();
+  const edit = page.getByRole('dialog', { name: 'Editar proveedor', exact: true });
   await edit.getByLabel('Razón social').fill('Mallas Andinas E2E');
   await edit.getByRole('checkbox', { name: 'Tercero activo' }).uncheck();
   await edit.getByRole('checkbox', { name: 'Confirmo que revisé los datos.' }).check();
   await edit.getByRole('button', { name: 'Guardar registro' }).click();
-  await expect(dialog(page)).toContainText('Mallas Andinas E2E');
+  await expect(edit).toHaveCount(0);
+  await expect(page.getByRole('dialog', { name: 'Datos del tercero', exact: true })).toContainText(
+    'Mallas Andinas E2E',
+  );
   await close(page);
   await page.goto('/compras');
   await page.getByRole('textbox', { name: 'Buscar registros' }).fill('');
