@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --open",
+    "start:headless": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "playwright test",
@@ -12,6 +13,9 @@
   },
   "private": true,
   "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=24.0.0"
+  },
   "dependencies": {
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",

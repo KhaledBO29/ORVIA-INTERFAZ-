@@ -6,15 +6,24 @@ Frontend educativo en **Angular 21**, TypeScript y SCSS, basado en las 13 pantal
 
 ## Ejecutar
 
-Requisitos: Node.js 22.12+ o 24 y npm. Se desarrolló con Node 24.19.0.
+Instala **Node.js 24 con npm** y Git. No necesitas instalar Angular CLI globalmente, configurar claves ni levantar un backend. Los comandos sirven en Windows, macOS y Linux.
 
 ```powershell
-git switch develop
+git clone https://github.com/KhaledBO29/ORVIA-INTERFAZ-.git
+cd ORVIA-INTERFAZ-
 npm ci
 npm start
 ```
 
-Abre http://localhost:4200. Para compilar: `npm run build`. Salida: `dist/orvia/browser`.
+`npm start` inicia el servidor y abre el navegador en http://localhost:4200. Mantén la terminal abierta mientras uses la aplicación; para detenerla, pulsa `Ctrl+C`.
+
+Si descargaste el ZIP, descomprímelo, abre una terminal en la carpeta que contiene `package.json` y ejecuta `npm ci` y `npm start`. La rama `main` ya contiene la aplicación completa.
+
+Si el navegador no se abre automáticamente, entra manualmente a la dirección que muestra la terminal. Para ejecutar sin abrir el navegador, usa `npm run start:headless`. Si el puerto está ocupado, puedes usar `npm start -- --port 4300` y abrir http://localhost:4300.
+
+La dirección local funciona en el equipo donde ejecutas el proyecto. Cada persona que lo clone ejecuta su propia copia. Los datos de demostración se guardan en su navegador y no se comparten con otros usuarios.
+
+Para compilar: `npm run build`. Salida: `dist/orvia/browser`. No abras `src/index.html` ni el archivo compilado con doble clic: la aplicación necesita un servidor web con redirección de sus rutas a `index.html`.
 
 ## Aprender y revisar
 
