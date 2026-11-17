@@ -1,6 +1,6 @@
 # Ramas y pull requests para un solo integrante
 
-El orden visual es **main (verde), develop (cian), features (rosado)**. El flujo de integración es **feature → develop → main**. Main recibe publicaciones de develop; las features no deben abrir nuevos PR directamente a main. Las ramas `feature/NN-nombre` forman una cadena continua de componentes. Cada feature nueva parte de la última feature integrada y tiene su propio commit de implementación.
+El orden visual es **main (cian), develop (rosado), features (verde)**. El flujo de integración es **feature → develop → main**. Main recibe publicaciones de develop; las features no deben abrir nuevos PR directamente a main. Las ramas `feature/NN-nombre` forman una cadena continua de componentes. Cada feature nueva parte de la última feature integrada y tiene su propio commit de implementación.
 
 El merge de cada PR agrega además un commit de integración. Ese commit de merge no es otro cambio del componente: conserva la separación visual de las ramas como en la captura de referencia. No uses squash ni rebase si quieres mantener ese gráfico. Las features se conservan tras integrarlas.
 
@@ -68,6 +68,6 @@ El 16 de noviembre de 2026 se reorganizaron los padres de los commits publicados
 
 El respaldo completo anterior a la reorganización está fuera del repositorio: `../ORVIA-historial-original-20261116.bundle`. Puede inspeccionarse sin alterar este proyecto mediante `git clone ../ORVIA-historial-original-20261116.bundle ../orvia-historial-original`.
 
-`.vscode/settings.json` configura Git Graph con **verde primero, cian segundo y rosado tercero**, curvas suaves y orden por fecha. El merge final de develop a main coloca la publicación en primer lugar; sus primeros padres conservan la línea de main, los de develop conservan la segunda línea y las features encadenadas conservan la tercera. Git Graph asigna los colores por carril, no por nombre de rama. El recorrido exacto puede variar si filtras ramas, cambias el orden o tienes commits nuevos todavía sin integrar. Las conexiones entre carriles representan integraciones reales.
+`.vscode/settings.json` configura Git Graph con **cian primero (#00e5ff), rosado segundo (#ff00dd) y verde tercero (#00ff66)**, curvas suaves y orden por fecha. El merge final de develop a main coloca la publicación en primer lugar; sus primeros padres conservan la línea de main, los de develop conservan la segunda línea y las features encadenadas conservan la tercera. Git Graph asigna los colores por carril, no por nombre de rama. El recorrido exacto puede variar si filtras ramas, cambias el orden o tienes commits nuevos todavía sin integrar. Las conexiones entre carriles representan integraciones reales.
 
 Abre Git Graph, muestra todas las ramas y pulsa Refresh. Si había un orden personalizado en ese repositorio, selecciona Commit Order → Date Order desde el menú del encabezado para aplicar el orden configurado. Conserva las features integradas y crea la siguiente desde la última feature, como en el ejemplo anterior, para prolongar el carril.
