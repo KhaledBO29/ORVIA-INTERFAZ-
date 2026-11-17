@@ -4,12 +4,9 @@
     <div class="toolbar">
       <label class="sr-only" for="table-status">Filtrar por estado</label
       ><select id="table-status" [value]="status()" (change)="changeStatus($event)">
-        <option>Todos</option>
-        <option>Pendiente</option>
-        <option>En proceso</option>
-        <option>Completada</option>
-        <option>Vencida</option>
-        <option>Programada</option></select
+        @for (s of statuses(); track s) {
+          <option>{{ s }}</option>
+        }</select
       ><button (click)="exportCsv()"><app-icon name="download" /> Exportar CSV</button>
     </div>
   </div>
@@ -17,31 +14,75 @@
     <table>
       <thead>
         <tr>
-          <th>Documento / Fecha</th>
-          <th>Proveedor / Cliente</th>
-          <th>Material</th>
-          <th>Planta</th>
-          <th>Cantidad</th>
+          <th>
+            {{
+              mode() === 'inventario'
+                ? 'Referencia'
+                : mode() === 'proveedores'
+                  ? 'Identificador'
+                  : 'Documento / Fecha'
+            }}
+          </th>
+          <th>
+            {{
+              mode() === 'inventario'
+                ? 'Categoría'
+                : mode() === 'proveedores'
+                  ? 'Proveedor'
+                  : 'Proveedor / Cliente'
+            }}
+          </th>
+          <th>{{ mode() === 'proveedores' ? 'Especialidad' : 'Producto / Concepto' }}</th>
+          <th>{{ mode() === 'proveedores' ? 'Teléfono / NIT' : 'Planta / Empresa' }}</th>
+          <th>
+            {{
+              mode() === 'inventario'
+                ? 'Stock disponible'
+                : mode() === 'proveedores'
+                  ? 'Órdenes'
+                  : 'Líneas'
+            }}
+          </th>
+          @if (mode() === 'inventario') {
+            <th>En pedido</th>
+            <th>Costo promedio</th>
+          }
           <th>Estado</th>
-          <th>Total</th>
+          <th>
+            {{
+              mode() === 'inventario'
+                ? 'Valor del stock'
+                : ['proveedores', 'cuentas-por-pagar'].includes(mode())
+                  ? 'Saldo pendiente'
+                  : 'Neto COP'
+            }}
+          </th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let row of visible(); trackBy: trackRow">
           <td>
-            <b class="document">{{ row.id }}</b
-            ><small>{{ row.date | date: 'dd/MM/yyyy' }}</small>
+            <b class="document">{{ row.id }}</b>
+            @if (!['inventario', 'proveedores'].includes(mode())) {
+              <small>{{ row.date | date: 'dd/MM/yyyy' }}</small>
+            }
           </td>
           <td>
-            <span class="company-avatar">{{ row.name.slice(0, 1) }}</span
-            >{{ row.name }}
+            <span class="company-avatar">{{ row.name.slice(0, 1) }}</span>{{ row.name }}
           </td>
-          <td>{{ row.detail }}</td>
+          <td class="concept">{{ row.detail }}</td>
           <td>
             {{ row.plant }}<small>{{ row.company }}</small>
           </td>
-          <td>{{ row.quantity }} m³</td>
+          <td>{{ row.quantity | number: '1.0-3' : 'es-CO' }} {{ row.unit }}</td>
+          @if (mode() === 'inventario') {
+            <td>{{ row.incoming | number: '1.0-3' : 'es-CO' }} {{ row.unit }}</td>
+            <td>
+              {{ row.average | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }} /
+              {{ row.unit }}
+            </td>
+          }
           <td>
             <span
               class="badge"

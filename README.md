@@ -31,6 +31,7 @@ Para compilar: `npm run build`. Salida: `dist/orvia/browser`. No abras `src/inde
 - [Ramas, commits y pull requests](docs/GIT-Y-PR.md): flujo de un solo desarrollador y orden de implementación.
 - [Matriz de requisitos](docs/REQUISITOS.md): ubicación exacta de cada concepto solicitado.
 - [Alcance y validación](docs/VALIDACION.md): comportamiento real y diferencias respecto al diseño.
+- [Operación ERP relacional](docs/ERP.md): recorrido de compras, stock, ventas, pagos y reglas de cálculo.
 - [Entregas y enlaces a los PR](docs/ENTREGAS.md).
 - [Plantilla de PR de la UCC](.github/pull_request_template.md).
 
@@ -38,7 +39,7 @@ Para compilar: `npm run build`. Salida: `dist/orvia/browser`. No abras `src/inde
 
 Inicio, finanzas, ventas, inventario, compras, proveedores, solicitudes, órdenes de compra, recepciones, cuentas por pagar, pagos, reportes, configuración y TaskFlow.
 
-Las páginas de negocio ensamblan un panel compartido. Solicitudes, órdenes, recepciones y cuentas por pagar priorizan listados; los resúmenes priorizan indicadores y gráficas. TaskFlow agrega el tablero de tareas requerido.
+Cada módulo consulta sus entidades y documentos. El flujo **solicitud → orden → recepción → inventario / cuenta por pagar → abonos** mantiene vínculos y saldos. Las ventas descontarán stock al confirmar el despacho y registrarán el ingreso y su costo. TaskFlow organiza las tareas de planta.
 
 ## Validar
 
@@ -51,11 +52,13 @@ En Windows las pruebas usan Google Chrome instalado. En Linux/macOS instala Chro
 
 ## Demostración
 
-Los registros son ficticios y compartidos entre módulos para enseñar comunicación de estado. Se pueden crear registros, consultar detalles, completar operaciones, filtrar, paginar, exportar CSV y organizar tareas. Los datos se conservan **en el navegador mediante LocalStorage**. No hay backend, autenticación, procesamiento de pagos ni contabilidad real.
+La demostración incluye agregados, bandas, rodamientos, tornillos, tuercas, mallas, diésel y aceite. Permite documentos con varios productos, precios y cantidades editables, IVA por línea, retención, transporte y cargador. Las recepciones actualizan el costo promedio por planta y la deuda; los despachos y consumos descuentan existencias. Se bloquean las salidas sin stock y los abonos superiores al saldo.
 
-Las curvas, porcentajes de variación, distribución por categoría y alertas del inicio son ilustrativos. El proyecto es una adaptación funcional de la referencia, con paneles simplificados; no es una reproducción píxel por píxel de sus 13 pantallas.
+Los indicadores, alertas, reportes y gráficas se calculan desde documentos y saldos; los movimientos confirmados generan asientos simulados con débito igual a crédito. Proveedores y clientes se crean, editan e inactivan conservando su historial. Las tablas permiten búsqueda, filtros, paginación, detalles y exportación CSV con unidades.
 
-Las preferencias de configuración se guardan como demostración, sin controlar dispositivos GPS, procesos bancarios o servicios externos. La fecha de demostración es el 15 de noviembre de 2026.
+Configuración controla las tasas predeterminadas de nuevos documentos, capacidad de volqueta para estimar viajes, notificaciones y métodos de abono. Los datos se conservan **en este navegador mediante LocalStorage**, con respaldo JSON descargable. La fecha y los períodos usan la zona horaria de Bogotá.
+
+Es un frontend con contabilidad interna **simulada**, sin backend, autenticación, bancos ni facturación electrónica. Las tasas son parámetros educativos. Las recepciones son completas y los documentos confirmados no se editan ni revierten. Consulta el [alcance de la simulación](docs/ERP.md).
 
 Las fuentes de Google son opcionales; existe una alternativa local Arial. Los iconos y el logo se dibujan con SVG locales.
 

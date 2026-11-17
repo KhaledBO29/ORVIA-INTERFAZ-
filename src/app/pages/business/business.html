@@ -1,148 +1,215 @@
-<nav class="tabs" aria-label="Secciones del módulo">
-  <span class="active tab-label">Resumen</span><a routerLink="/ordenes-compra">Órdenes de compra</a
-  ><a routerLink="/recepciones">Recepciones</a><a routerLink="/proveedores">Proveedores</a
-  ><a routerLink="/solicitudes">Solicitudes</a
-  ><a routerLink="/cuentas-por-pagar">Cuentas por pagar</a><a routerLink="/pagos">Pagos</a
-  ><a routerLink="/reportes">Reportes</a>
+﻿<nav class="tabs" aria-label="Flujo de abastecimiento">
+  <a routerLink="/solicitudes">Solicitudes</a><a routerLink="/ordenes-compra">Órdenes de compra</a
+  ><a routerLink="/recepciones">Recepciones</a><a routerLink="/inventario">Inventario</a
+  ><a routerLink="/cuentas-por-pagar">Cuentas por pagar</a><a routerLink="/pagos">Pagos</a>
 </nav>
 <div class="page-intro">
   <div>
     <h1>{{ title() }}</h1>
-    <p>Controla tus operaciones, materiales y movimientos en un solo lugar.</p>
+    <p>{{ description() }}</p>
   </div>
-  <button class="primary new-button" (click)="form.set(true)">
-    <app-icon name="plus" /> Nuevo registro
-  </button>
+  <div class="toolbar">
+    @if (
+      [
+        'ventas',
+        'compras',
+        'ordenes-compra',
+        'solicitudes',
+        'inventario',
+        'proveedores',
+        'finanzas',
+      ].includes(mode())
+    ) {
+      <button class="primary new-button" (click)="formMode.set(mode())">
+        <app-icon name="plus" />{{
+          mode() === 'inventario'
+            ? 'Registrar movimiento'
+            : mode() === 'proveedores'
+              ? 'Nuevo proveedor'
+              : mode() === 'finanzas'
+                ? 'Registrar gasto'
+                : 'Nuevo registro'
+        }}
+      </button>
+    }
+    @if (mode() === 'ventas') {
+      <button (click)="formMode.set('clientes')">Nuevo cliente</button>
+    }
+    @if (mode() === 'finanzas') {
+      <button (click)="formMode.set('ingreso')">Registrar ingreso</button>
+    }
+    @if (mode() === 'recepciones') {
+      <a class="primary link-button" routerLink="/ordenes-compra">Ir a órdenes pendientes →</a>
+    }
+    @if (mode() === 'pagos') {
+      <a class="primary link-button" routerLink="/cuentas-por-pagar">Registrar abono →</a>
+    }
+  </div>
 </div>
 @if (notice()) {
   <p class="notice" role="status">{{ notice() }}</p>
 }
-<section class="metrics five">
+@if (error() && !selectedId()) {
+  <p class="notice negative" role="alert">{{ error() }}</p>
+}
+<section class="metrics" [class.five]="metrics().length === 5">
   @for (metric of metrics(); track metric.label) {
     <app-stat-card [metric]="metric" />
   }
 </section>
-@if (!listFirst()) {
-  <div class="grid-panels">
-    <app-chart
-      [title]="title() + ' vs. mes anterior'"
-      [total]="store.total()"
-      [bars]="mode() === 'finanzas' || mode() === 'pagos'"
-    />
-    <section class="card panel">
-      <div class="card-head">
-        <h2>
-          {{ mode() === 'inventario' ? 'Inventario por material' : 'Distribución por material' }}
-        </h2>
-      </div>
-      <div class="donut-wrap">
-        <div
-          class="donut"
-          role="img"
-          aria-label="Distribución demostrativa: Triturado 38,4%, base granular 26,7%, arena 20,7%, otros 14,2%"
-        >
-          <div>
-            <small>Total del período</small
-            ><strong>{{
-              store.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
-            }}</strong
-            ><small>COP</small>
-          </div>
+@if (mode() === 'ventas') {
+  <details class="card panel section-gap">
+    <summary>Directorio de clientes</summary>
+    @for (p of store.parties(); track p.id) {
+      @if (p.type === 'cliente') {
+        <div class="summary-line">
+          <span>{{ p.name }} · {{ p.nit }} · {{ p.active ? 'Activo' : 'Inactivo' }}</span
+          ><button (click)="selectedId.set(p.id); formMode.set('clientes')">Editar cliente</button>
         </div>
-      </div>
-      <div class="category-list">
-        @for (category of categories; track category[0]) {
-          <div>
-            <span class="dot" [style.background]="category[2]"></span>{{ category[0]
-            }}<b>{{ category[1] }}</b>
-          </div>
-        }
-      </div>
-      <small class="demo-label">Distribución ilustrativa de demostración</small>
-    </section>
+      }
+    }
+  </details>
+}
+@if (['finanzas', 'reportes'].includes(mode())) {
+  <div class="finance-grid">
+    <app-chart title="Movimientos confirmados por fecha" [rows]="chartRows()" [bars]="true" />
     <section class="card panel">
       <div class="card-head">
-        <h2>Resumen rápido</h2>
-        <span class="badge success">En vivo</span>
+        <h2>Control financiero</h2>
+        <span class="badge">Simulación</span>
       </div>
       <div class="summary-line">
-        <span>Total del período</span
+        <span>Saldo actual a proveedores</span
         ><strong>{{
-          store.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+          store.summary().debt | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
         }}</strong>
       </div>
       <div class="summary-line">
-        <span>Registros disponibles</span><strong>{{ store.filtered().length }}</strong>
+        <span>IVA generado − descontable del período</span
+        ><strong>{{
+          store.summary().tax | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+        }}</strong>
       </div>
       <div class="summary-line">
-        <span>Operaciones completadas</span
-        ><strong class="positive">{{ metrics()[2].value }}</strong>
+        <span>Retenciones por pagar del período</span
+        ><strong>{{
+          store.summary().retention | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+        }}</strong>
       </div>
       <div class="summary-line">
-        <span>Pendientes de revisión</span
-        ><strong class="negative">{{ metrics()[4].value }}</strong>
+        <span>Otros ingresos del período</span
+        ><strong>{{
+          store.summary().income | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+        }}</strong>
       </div>
-      <div class="summary-line">
-        <span>Empresa</span><strong>{{ store.company() }}</strong>
-      </div>
-      <div class="summary-line">
-        <span>Sucursal</span><strong>{{ store.plant() }}</strong>
-      </div>
-      <a routerLink="/taskflow" class="task-link">Organizar mis tareas <app-icon name="arrow" /></a>
+      <p class="explanation">
+        Caja inicial: $50.000.000 en Planta Principal. Los abonos afectan caja y deuda, sin duplicar
+        gastos. IVA y retenciones se registran por separado. No se liquidan obligaciones
+        tributarias.
+      </p>
     </section>
   </div>
-} @else {
-  <div class="list-tabs">
-    @for (status of ['Todos', 'Pendiente', 'En proceso', 'Completada', 'Vencida']; track status) {
-      <button [class.active]="activeStatus() === status" (click)="activeStatus.set(status)">
-        {{ status }}
-      </button>
-    }
-  </div>
-  <section class="card operation-summary">
-    <div>
-      <small>VOLUMEN TOTAL RESERVADO</small><strong>{{ quantity() }} m³</strong>
-    </div>
-    <div>
-      <small>OPERACIONES POR RECIBIR</small><strong>{{ pending().length }}</strong>
-    </div>
-    <div>
-      <small>VALOR DE LA SELECCIÓN</small
-      ><strong>{{ total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
-    </div>
-    <a routerLink="/taskflow">Organizar seguimiento →</a>
-  </section>
 }
 @if (mode() === 'reportes') {
-  <section class="card report-banner">
-    <app-icon name="truck" />
-    <div>
-      <h2>Despachos de material y salidas de volquetas</h2>
-      <p>
-        {{ quantity() }} m³ registrados · {{ rows().length }} movimientos. Descarga el detalle con
-        Exportar CSV.
-      </p>
+  <section class="card panel section-gap">
+    <div class="card-head"><h2>Agregados e insumos del período</h2></div>
+    <div class="table-scroll">
+      <table class="operation-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Recibido</th>
+            <th>Despachado</th>
+            <th>Venta sin IVA ni transporte</th>
+            <th>Costo</th>
+            <th>Margen de producto</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of reportProducts(); track p.id) {
+            <tr>
+              <td>{{ p.name }}</td>
+              <td>{{ p.received | number: '1.0-3' : 'es-CO' }} {{ p.unit }}</td>
+              <td>{{ p.sold | number: '1.0-3' : 'es-CO' }} {{ p.unit }}</td>
+              <td>{{ p.revenue | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td>{{ p.cost | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td>
+                {{ p.revenue - p.cost | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">No hay movimientos en esta selección.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   </section>
 }
+<div class="list-tabs" aria-label="Estados de documentos">
+  @for (status of statuses(); track status) {
+    <button [class.active]="activeStatus() === status" (click)="activeStatus.set(status)">
+      {{ status }}
+    </button>
+  }
+</div>
 <app-data-table
-  [title]="'Listado de ' + title().toLowerCase()"
-  [rows]="rows()"
-  (selected)="selected.set($event)"
+  [title]="
+    mode() === 'inventario'
+      ? 'Existencias por planta'
+      : mode() === 'proveedores'
+        ? 'Directorio de proveedores'
+        : 'Documentos · ' + title()
+  "
+  [mode]="mode()"
+  [rows]="visibleRows()"
+  (selected)="open($event)"
 />
-@if (form()) {
-  <app-record-form
-    [title]="'Nuevo registro · ' + title()"
-    (closed)="form.set(false)"
-    (saved)="saved()"
-  />
+@if (mode() === 'finanzas') {
+  <section class="card panel section-gap">
+    <div class="card-head">
+      <h2>Libro de movimientos del período</h2>
+      <span class="badge">Débito / crédito</span>
+    </div>
+    <div class="table-scroll">
+      <table class="operation-table">
+        <thead>
+          <tr>
+            <th>Documento</th>
+            <th>Cuenta</th>
+            <th>Débito</th>
+            <th>Crédito</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (l of store.ledger(); track $index) {
+            <tr>
+              <td>
+                <button class="text-button" (click)="selectedId.set(l.document)">
+                  {{ l.document }}
+                </button>
+              </td>
+              <td>{{ l.account }}</td>
+              <td>{{ l.debit | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+              <td>{{ l.credit | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4">Sin asientos para estos filtros.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
 }
-@if (selected(); as row) {
-  <div class="detail-backdrop" (click)="selected.set(null)" (keydown.escape)="selected.set(null)">
+@if (selectedId()) {
+  <div class="detail-backdrop" (click)="selectedId.set('')">
     <section
       class="card detail"
       appDialogFocus
-      (dismissed)="selected.set(null)"
+      (dismissed)="selectedId.set('')"
       role="dialog"
       aria-modal="true"
       aria-labelledby="detail-title"
@@ -150,36 +217,252 @@
       (click)="$event.stopPropagation()"
     >
       <div class="card-head">
-        <h1 id="detail-title">Detalle del registro</h1>
-        <button aria-label="Cerrar detalle" (click)="selected.set(null)">
+        <h1 id="detail-title">
+          {{
+            selected()
+              ? labels[selected()!.kind]
+              : selectedStock()
+                ? 'Existencias del producto'
+                : 'Datos del tercero'
+          }}
+        </h1>
+        <button aria-label="Cerrar detalle" (click)="selectedId.set('')">
           <app-icon name="close" />
         </button>
       </div>
-      <p class="detail-id">{{ row.id }}</p>
-      @for (
-        item of [
-          ['Proveedor / Cliente', row.name],
-          ['Material', row.detail],
-          ['Planta', row.plant],
-          ['Empresa', row.company],
-          ['Estado', row.status],
-          ['Cantidad', row.quantity + ' m³'],
-          ['Fecha', row.date],
-        ];
-        track item[0]
-      ) {
-        <div class="summary-line">
-          <span>{{ item[0] }}</span
-          ><strong>{{ item[1] }}</strong>
-        </div>
+      @if (error()) {
+        <p role="alert" class="notice negative">{{ error() }}</p>
       }
-      <div class="summary-line">
-        <span>Valor total</span
-        ><strong>{{ row.amount | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
-      </div>
-      <button class="primary" [disabled]="row.status === 'Completada'" (click)="complete()">
-        Marcar como completado
-      </button>
+      @if (selected(); as d) {
+        <p class="detail-id">{{ d.id }}</p>
+        <span class="badge">{{ d.status }}</span>
+        <div class="summary-line">
+          <span>Tercero</span><strong>{{ store.partyName(d.partyId) }}</strong>
+        </div>
+        <div class="summary-line">
+          <span>Planta / empresa</span><strong>{{ d.plant }} · {{ d.company }}</strong>
+        </div>
+        <div class="summary-line">
+          <span>Emisión / vencimiento</span><strong>{{ d.date }} / {{ d.due }}</strong>
+        </div>
+        @if (d.sourceId) {
+          <div class="summary-line">
+            <span>Documento origen</span
+            ><button class="text-button" (click)="selectedId.set(d.sourceId); error.set('')">
+              {{ d.sourceId }} →
+            </button>
+          </div>
+        }
+        @if (d.vehicle) {
+          <div class="summary-line">
+            <span>Volqueta</span><strong>{{ d.vehicle }}</strong>
+          </div>
+        }
+        @for (line of d.lines; track line.productId) {
+          <div class="summary-line">
+            <span
+              >{{ store.productName(line.productId)
+              }}<small class="block"
+                >{{ line.quantity }} {{ store.unit(line.productId) }} ×
+                {{ line.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }} · IVA
+                {{ line.iva }}%</small
+              ></span
+            ><strong>{{
+              line.quantity * line.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong>
+          </div>
+        }
+        @if (d.lines.length) {
+          <div class="summary-line">
+            <span>Subtotal</span
+            ><strong>{{
+              quote(d).subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>IVA simulado</span
+            ><strong>{{
+              quote(d).tax | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong>
+          </div>
+          <div class="summary-line">
+            <span>Transporte / cargador</span
+            ><strong
+              >{{ d.freight | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }} /
+              {{ d.loading | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong
+            >
+          </div>
+          <div class="summary-line">
+            <span>Retención simulada</span
+            ><strong>{{
+              quote(d).withheld | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong>
+          </div>
+        }
+        <div class="summary-line">
+          <span>{{
+            ['consumo', 'entrada'].includes(d.kind)
+              ? 'Valor de referencia (ver costo en asiento)'
+              : 'Neto del documento'
+          }}</span><strong>{{
+            (d.lines.length ? quote(d).total : d.amount)
+              | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+          }}</strong>
+        </div>
+        @if (d.note) {
+          <p class="explanation">{{ d.note }}</p>
+        }
+        @if (d.kind === 'pago') {
+          <div class="summary-line">
+            <span>Método</span><strong>{{ d.method }}</strong>
+          </div>
+        }
+        @if (d.status === 'Pendiente' && actionLabel(d)) {
+          <button class="primary" (click)="advance(d)">{{ actionLabel(d) }}</button>
+        }
+        @if (d.status === 'Pendiente' && ['solicitud', 'orden', 'venta'].includes(d.kind)) {
+          <button class="cancel-operation" (click)="cancelSelected()">Cancelar documento</button>
+        }
+        @if (d.kind === 'recepcion' && d.status === 'Completada') {
+          <div class="summary-line">
+            <span>Saldo pendiente</span
+            ><strong data-testid="outstanding">{{
+              store.balance(d.id) | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+            }}</strong>
+          </div>
+          @if (store.balance(d.id) > 0) {
+            <form class="payment-form" (ngSubmit)="pay()">
+              <h2>Registrar abono</h2>
+              <label
+                >Valor del abono (COP)<input
+                  type="number"
+                  name="payment"
+                  [(ngModel)]="payAmount"
+                  min="1"
+                  [max]="store.balance(d.id)"
+                  step="1"
+                  required /></label
+              ><label
+                >Método de pago<select name="method" [(ngModel)]="payMethod" required>
+                  <option value="">Seleccionar</option>
+                  @for (method of store.paymentMethods(); track method) {
+                    <option>{{ method }}</option>
+                  }
+                </select></label
+              ><button class="primary" [disabled]="!store.paymentMethods().length" type="submit">
+                Confirmar abono
+              </button>
+              @if (!store.paymentMethods().length) {
+                <p class="explanation">Habilita un método de pago en Configuración.</p>
+              }
+            </form>
+          }
+        }
+        @if (children().length) {
+          <h2 class="section-gap">Documentos relacionados</h2>
+          @for (child of children(); track child.id) {
+            <div class="summary-line">
+              <span>{{ labels[child.kind] }} · {{ child.status }}</span
+              ><button class="text-button" (click)="openDocument(child)">{{ child.id }} →</button>
+            </div>
+          }
+        }
+        @if (selectedJournal().length) {
+          <h2 class="section-gap">Movimiento contable</h2>
+          @for (l of selectedJournal(); track $index) {
+            @if (l.debit || l.credit) {
+              <div class="summary-line">
+                <span
+                  >{{ l.account
+                  }}<small class="block">{{ l.debit ? 'Débito' : 'Crédito' }}</small></span
+                ><strong>{{
+                  l.debit || l.credit | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+                }}</strong>
+              </div>
+            }
+          }
+        }
+      } @else if (selectedStock(); as p) {
+        <p class="detail-id">{{ p.id }} · {{ p.plant }}</p>
+        <h2>{{ p.name }}</h2>
+        <div class="summary-line">
+          <span>Disponible</span
+          ><strong data-testid="stock-quantity"
+            >{{ p.quantity | number: '1.0-3' : 'es-CO' }} {{ p.unit }}</strong
+          >
+        </div>
+        <div class="summary-line">
+          <span>En pedido: {{ store.incoming(p.id, p.plant) }} {{ p.unit }} · Mínimo</span
+          ><strong>{{ p.minimum }} {{ p.unit }}</strong>
+        </div>
+        <div class="summary-line">
+          <span>Costo promedio</span
+          ><strong
+            >{{ p.average | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }} /
+            {{ p.unit }}</strong
+          >
+        </div>
+        <div class="summary-line">
+          <span>Valor de existencias</span
+          ><strong>{{ p.value | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</strong>
+        </div>
+        <h2 class="section-gap">Kárdex · movimientos confirmados</h2>
+        <p class="explanation">
+          Saldo inicial de demostración más entradas, menos despachos y consumos. El kárdex incluye
+          todos los períodos.
+        </p>
+        @for (d of stockHistory(); track d.id) {
+          <div class="summary-line">
+            <span>{{ labels[d.kind] }} · {{ d.date }}</span
+            ><button class="text-button" (click)="openDocument(d)">{{ d.id }} →</button>
+          </div>
+        } @empty {
+          <p class="explanation">Solo existe el saldo inicial.</p>
+        }
+      } @else if (selectedParty(); as p) {
+        <h2>{{ p.name }}</h2>
+        @for (
+          item of [
+            ['NIT', p.nit],
+            ['Correo', p.email],
+            ['Teléfono', p.phone],
+            ['Especialidad', p.specialty],
+            ['Estado', p.active ? 'Activo' : 'Inactivo'],
+          ];
+          track item[0]
+        ) {
+          <div class="summary-line">
+            <span>{{ item[0] }}</span><strong>{{ item[1] }}</strong>
+          </div>
+        }
+        <button
+          class="primary"
+          (click)="formMode.set(p.type === 'cliente' ? 'clientes' : 'proveedores')"
+        >
+          Editar {{ p.type }}
+        </button>
+      }
     </section>
   </div>
+}
+@if (formMode()) {
+  <app-record-form
+    [title]="
+      formMode() === 'clientes'
+        ? selectedParty()
+          ? 'Editar cliente'
+          : 'Nuevo cliente'
+        : formMode() === 'proveedores'
+          ? selectedParty()
+            ? 'Editar proveedor'
+            : 'Nuevo proveedor'
+          : formMode() === 'inventario'
+            ? 'Movimiento de inventario'
+            : 'Nuevo registro · ' + title()
+    "
+    [mode]="formMode()"
+    [party]="selectedParty()"
+    (closed)="formMode.set('')"
+    (saved)="saved()"
+  />
 }

@@ -1,11 +1,13 @@
-<div class="page-intro">
+﻿<div class="page-intro">
   <div>
     <h1>Configuración general</h1>
-    <p>Administra los parámetros y preferencias de tu empresa.</p>
+    <p>Parámetros de la operación simulada y preferencias de esta empresa.</p>
   </div>
 </div>
 @if (saved()) {
-  <p class="notice" role="status">Configuración guardada en este navegador.</p>
+  <p class="notice" role="status">
+    Configuración guardada. Los nuevos documentos usarán estos parámetros.
+  </p>
 }
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="settings-grid">
@@ -20,77 +22,86 @@
     </section>
     <section class="card panel">
       <div class="card-head">
-        <h2><app-icon name="box" /> Configuración de plantas</h2>
+        <h2><app-icon name="truck" /> Parámetros operativos</h2>
       </div>
-      @for (
-        plant of ['Planta Principal (Triturado)', 'Planta El Encano', 'Planta Guaitarilla'];
-        track plant
-      ) {
-        <div class="summary-line">
-          <span>{{ plant }}</span
-          ><span class="badge success">Activa</span>
-        </div>
-      }
+      <label
+        >Capacidad de volqueta (m³)<input
+          type="number"
+          formControlName="capacity"
+          min="1"
+          max="100"
+          step="0.1" /></label
+      ><label
+        >IVA predeterminado simulado (%)<input
+          type="number"
+          formControlName="iva"
+          min="0"
+          max="100"
+          step="0.01" /></label
+      ><label
+        >Retención predeterminada simulada (%)<input
+          type="number"
+          formControlName="retention"
+          min="0"
+          max="100"
+          step="0.01"
+      /></label>
       <p class="explanation">
-        Estas plantas son datos de demostración. Los filtros del encabezado permiten consultar las
-        plantas principal y El Encano.
+        La capacidad calcula los viajes estimados de nuevas ventas. Las tasas se pueden ajustar por
+        documento; no alteran documentos ya registrados. Son supuestos educativos, no reglas
+        tributarias de un producto.
       </p>
     </section>
     <section class="card panel">
       <div class="card-head">
-        <h2><app-icon name="truck" /> Parámetros de operación</h2>
+        <h2><app-icon name="box" /> Catálogo y plantas</h2>
       </div>
-      <div class="summary-line"><span>Capacidad estándar</span><strong>12,0 m³</strong></div>
-      <div class="summary-line"><span>Capacidad mínima</span><strong>6,0 m³</strong></div>
-      <label class="toggle"
-        >Foto obligatoria en salida<input type="checkbox" formControlName="photo" /></label
-      ><label class="toggle">GPS obligatorio<input type="checkbox" formControlName="gps" /></label
-      ><label class="toggle"
-        >Notificaciones locales<input type="checkbox" formControlName="notifications"
-      /></label>
+      <div class="summary-line">
+        <span>Planta Principal</span><span class="badge success">Activa</span>
+      </div>
+      <div class="summary-line">
+        <span>Planta El Encano</span><span class="badge success">Activa</span>
+      </div>
+      <div class="summary-line">
+        <span>Catálogo</span><strong>{{ store.products.length }} referencias</strong>
+      </div>
+      <p class="explanation">
+        Agregados en m³; bandas en metros; tornillos, tuercas, mallas y rodamientos por unidad;
+        diésel en galones; aceites en litros. El inventario es físico por planta y se valora al
+        costo promedio.
+      </p>
     </section>
     <section class="card panel">
       <div class="card-head">
-        <h2><app-icon name="box" /> Materiales y productos</h2>
-      </div>
-      @for (
-        material of [
-          'Triturado · 3/4″, 1/2″, 1″',
-          'Base granular · Base, subbase',
-          'Arena triturada · Fina',
-          'Relleno triturado',
-        ];
-        track material
-      ) {
-        <div class="summary-line">{{ material }}<span class="badge">m³</span></div>
-      }
-    </section>
-    <section class="card panel">
-      <div class="card-head">
-        <h2><app-icon name="wallet" /> Métodos de pago</h2>
+        <h2><app-icon name="wallet" /> Pagos y notificaciones</h2>
       </div>
       <label class="toggle">Efectivo<input type="checkbox" formControlName="cash" /></label
       ><label class="toggle"
-        >Transferencia bancaria<input type="checkbox" formControlName="transfer"
+        >Transferencia bancaria<input type="checkbox" formControlName="transfer" /></label
+      ><label class="toggle"
+        >Notificaciones locales<input type="checkbox" formControlName="notifications"
       /></label>
       <p class="explanation">
-        Preferencias de demostración. No se procesan pagos ni se conectan servicios de GPS.
+        Solo los métodos habilitados estarán disponibles para nuevos abonos. Las ventas confirmadas
+        se simulan de contado. Si desactivas ambos métodos, se bloquean nuevos pagos a proveedores.
       </p>
     </section>
     <section class="card panel">
       <div class="card-head">
-        <h2><app-icon name="check" /> Respaldo y seguridad</h2>
+        <h2><app-icon name="check" /> Respaldo local</h2>
       </div>
-      <div class="summary-line"><span>Almacenamiento</span><strong>LocalStorage</strong></div>
-      <div class="summary-line"><span>Modo</span><span class="badge">Demostración</span></div>
+      <div class="summary-line"><span>Modo</span><span class="badge">Simulación ERP</span></div>
       <p class="explanation">
-        La información se guarda en este dispositivo. No existe sincronización entre usuarios o
-        equipos.
+        Los documentos, terceros, preferencias y tareas se conservan en este navegador. Descarga una
+        copia de consulta en JSON. No hay sincronización entre equipos ni conexión bancaria.
       </p>
+      <button type="button" (click)="download()">Descargar respaldo JSON</button>
     </section>
   </div>
   @if (form.touched && form.invalid) {
-    <p class="negative" role="alert">Revisa los datos de la empresa y escribe un correo válido.</p>
+    <p class="negative" role="alert">
+      Revisa los datos de empresa, correo, capacidad y tasas entre 0 y 100.
+    </p>
   }
   <button type="submit" class="primary save">Guardar configuración</button>
 </form>

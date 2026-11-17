@@ -1,6 +1,6 @@
 # Entregas ORVIA
 
-26 entregas de implementación y una entrega de organización del historial, cada una con su rama feature y commit. Todas se integran por PR hacia develop. Las features conservan sus referencias después del merge y forman una cadena continua. Main conserva su publicación parcial.
+Las entregas tienen su rama feature y conservan las referencias después de integrarse. Las primeras entregas se enlazan con sus PR históricos; las posteriores indican el método real de integración. La publicación actual está en main y mantiene el flujo feature → develop → main.
 
 | Orden | Rama | Commit | Pull request |
 | --- | --- | --- | --- |
@@ -30,6 +30,11 @@
 | 24 | feature/24-configuracion | Feat:Crear componente de configuracion con formulario reactivo | [#25](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/25) |
 | 25 | feature/25-ensamblaje-rutas | Feat:Ensamblar componente App y rutas de todas las pantallas | [#26](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/26) |
 | 26 | feature/26-documentacion-pruebas | Feat:Agregar guia por componentes y validacion automatizada | PR de esta entrega; consultar la rama en GitHub |
+| 27 | feature/27-organizacion-historial | Feat:Organizar historial continuo y colores de ramas | [#28](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/28) |
+| 28 | feature/28-prueba-persistencia | Fix:Esperar persistencia de TaskFlow antes de recargar | [#30](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/30) |
+| 29 | feature/29-orden-colores-gitflow | Feat:Ordenar main verde develop cian y features rosadas | [#31](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pull/31) |
+| 30 | feature/30-arranque-portable | Fix:Facilitar arranque desde una copia limpia del repositorio | Merge explícito a develop y luego a main, sin PR |
+| 31 | feature/31-erp-relacional | Feat:Conectar operacion ERP de triturados inventario y contabilidad | Merge explícito a develop y luego a main, sin PR; [reglas y recorrido](ERP.md) |
 
 La entrega 27 configura Git Graph y documenta la organización continua: [ver su PR por rama](https://github.com/KhaledBO29/ORVIA-INTERFAZ-/pulls?q=is%3Apr+head%3Afeature%2F27-organizacion-historial).
 

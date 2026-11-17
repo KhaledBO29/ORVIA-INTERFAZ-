@@ -45,7 +45,10 @@
       [attr.aria-expanded]="notifications()"
       (click)="notifications.set(!notifications()); help.set(false)"
     >
-      <app-icon name="bell" /><b>3</b></button
+      <app-icon name="bell" />
+      @if (store.preferences().notifications) {
+        <b>{{ store.pendingRequests() }}</b>
+      }</button
     ><button
       class="icon-button"
       aria-label="Ayuda"
@@ -63,9 +66,13 @@
 @if (notifications()) {
   <section class="popover card">
     <h2>Centro de notificaciones</h2>
-    <p>3 facturas requieren revisión</p>
-    <p>Stock bajo de base granular</p>
-    <p>Una recepción está en proceso</p>
+    @if (store.preferences().notifications) {
+      <p>{{ store.pendingRequests() }} solicitudes pendientes de aprobación</p>
+      <p>{{ store.summary().low }} referencias por debajo del mínimo</p>
+      <p>{{ store.summary().overdue }} cuentas vencidas</p>
+    } @else {
+      <p>Notificaciones desactivadas en Configuración.</p>
+    }
     <button (click)="notifications.set(false)">Cerrar</button>
   </section>
 }

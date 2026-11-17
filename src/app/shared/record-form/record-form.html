@@ -1,4 +1,4 @@
-<div class="backdrop" (click)="closed.emit()">
+﻿<div class="backdrop" (click)="closed.emit()">
   <section
     role="dialog"
     aria-modal="true"
@@ -10,58 +10,288 @@
   >
     <div class="card-head">
       <div>
-        <small>GESTIÓN DE OPERACIONES</small>
+        <small>OPERACIÓN DE PLANTA</small>
         <h1 id="form-title">{{ title() }}</h1>
       </div>
       <button type="button" aria-label="Cerrar formulario" (click)="closed.emit()">
         <app-icon name="close" />
       </button>
     </div>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <label
-        >Proveedor o cliente<input formControlName="name" placeholder="Ej. Canteras Andinas S.A.S."
-      /></label>
-      @if (form.controls.name.touched && form.controls.name.invalid) {
-        <p class="negative">Ingresa un nombre de al menos 3 caracteres.</p>
-      }
-      <div class="fields">
+    <form #f="ngForm" (ngSubmit)="submit(f)">
+      @if (isParty) {
         <label
-          >Material<select formControlName="detail">
-            <option>Triturado 3/4″ (19 mm)</option>
-            <option>Triturado 1/2″ (12 mm)</option>
-            <option>Base granular</option>
-            <option>Arena triturada</option>
-            <option>Relleno triturado</option>
-          </select></label
-        ><label
-          >Empresa<select formControlName="company">
-            <option>Planta de Triturado</option>
-            <option>Comercializadora</option>
-          </select></label
-        ><label
-          >Planta<select formControlName="plant">
-            <option>Planta Principal</option>
-            <option>Planta El Encano</option>
-          </select></label
-        ><label>Fecha<input type="date" formControlName="date" /></label
-        ><label>Valor total (COP)<input type="number" formControlName="amount" min="1" /></label
-        ><label>Cantidad (m³)<input type="number" formControlName="quantity" min="1" /></label>
-      </div>
-      <label
-        >Estado<select formControlName="status">
-          <option>Pendiente</option>
-          <option>En proceso</option>
-          <option>Completada</option>
-          <option>Programada</option>
-        </select></label
-      ><label class="checkbox"
-        ><input type="checkbox" formControlName="accepted" /> Confirmo que revisé los datos del
-        registro.</label
+          >Razón social<input name="name" [(ngModel)]="third.name" required minlength="3"
+        /></label>
+        <div class="fields">
+          <label>NIT<input name="nit" [(ngModel)]="third.nit" required /></label>
+          <label
+            >Correo electrónico<input
+              type="email"
+              name="email"
+              [(ngModel)]="third.email"
+              required
+              email
+          /></label>
+          <label>Teléfono<input name="phone" [(ngModel)]="third.phone" required /></label>
+          <label
+            >Especialidad<input name="specialty" [(ngModel)]="third.specialty" required
+          /></label>
+        </div>
+        <label class="checkbox"
+          ><input type="checkbox" name="active" [(ngModel)]="third.active" /> Tercero activo</label
+        >
+      } @else {
+        @if (!internal && !isCash) {
+          <label
+            >{{ draft.kind === 'venta' ? 'Cliente' : 'Proveedor'
+            }}<select
+              [attr.aria-label]="draft.kind === 'venta' ? 'Cliente' : 'Proveedor'"
+              name="partyId"
+              [(ngModel)]="draft.partyId"
+              required
+            >
+              <option value="">Seleccionar tercero</option>
+              @for (p of counterparties; track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select></label
+          >
+          <p class="hint">
+            Registra proveedores desde Proveedores y clientes desde Ventas → Nuevo cliente.
+          </p>
+        }
+        <div class="fields">
+          <label
+            >Empresa<select aria-label="Empresa" name="company" [(ngModel)]="draft.company">
+              <option>Planta de Triturado</option>
+              <option>Comercializadora</option>
+            </select></label
+          >
+          <label
+            >Planta<select aria-label="Planta" name="plant" [(ngModel)]="draft.plant">
+              @for (p of plants; track p) {
+                <option>{{ p }}</option>
+              }
+            </select></label
+          >
+          <label
+            >Fecha de emisión<input
+              type="date"
+              name="date"
+              [(ngModel)]="draft.date"
+              [max]="today"
+              required
+          /></label>
+          <label
+            >Fecha de vencimiento<input
+              type="date"
+              name="due"
+              [(ngModel)]="draft.due"
+              [min]="draft.date"
+              required
+          /></label>
+        </div>
+        @if (mode() === 'inventario') {
+          <label
+            >Tipo de movimiento<select name="kind" [(ngModel)]="draft.kind">
+              <option value="entrada">Entrada de producción / ajuste</option>
+              <option value="consumo">Salida por consumo / mantenimiento</option>
+            </select></label
+          >
+          <p class="hint">
+            Las compras ingresan por una recepción. La entrada manual registra producción o un
+            ajuste valorado; el consumo utiliza el costo promedio de la planta.
+          </p>
+        }
+        @if (isCash) {
+          <label
+            >Valor (COP)<input
+              type="number"
+              name="amount"
+              [(ngModel)]="draft.amount"
+              min="1"
+              step="1"
+              required
+          /></label>
+        } @else {
+          @for (line of draft.lines; track $index; let i = $index) {
+            <fieldset class="line-item">
+              <legend>Producto {{ i + 1 }}</legend>
+              <label
+                >Material o insumo<select
+                  aria-label="Material o insumo"
+                  [name]="'product' + i"
+                  [(ngModel)]="line.productId"
+                  (ngModelChange)="selectProduct(line)"
+                >
+                  @for (p of store.products; track p.id) {
+                    <option [value]="p.id">{{ p.name }} · {{ p.unit }}</option>
+                  }
+                </select></label
+              >
+              <div class="fields">
+                <label
+                  >Cantidad ({{ store.unit(line.productId) }})<input
+                    type="number"
+                    [name]="'quantity' + i"
+                    [(ngModel)]="line.quantity"
+                    min="0.001"
+                    [step]="store.unit(line.productId) === 'und' ? 1 : 0.001"
+                    required
+                /></label>
+                <label
+                  >{{
+                    draft.kind === 'venta'
+                      ? 'Precio unitario (COP)'
+                      : draft.kind === 'consumo'
+                        ? 'Costo unitario de referencia (COP)'
+                        : 'Costo unitario (COP)'
+                  }}<input
+                    type="number"
+                    [name]="'price' + i"
+                    [(ngModel)]="line.price"
+                    min="1"
+                    step="1"
+                    [readonly]="draft.kind === 'consumo'"
+                    required
+                /></label>
+                @if (!internal) {
+                  <label
+                    >IVA simulado (%)<input
+                      type="number"
+                      [name]="'iva' + i"
+                      [(ngModel)]="line.iva"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      required
+                  /></label>
+                }
+                <div class="line-summary">
+                  @if (draft.kind === 'consumo') {
+                    <small
+                      >Costo promedio actual:
+                      {{ average(line) | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }} /
+                      {{ store.unit(line.productId) }}</small
+                    >
+                  }
+                  <small>Disponible: {{ available(line) }} {{ store.unit(line.productId) }}</small
+                  ><strong>{{
+                    lineAmount(line) | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+                  }}</strong>
+                </div>
+              </div>
+              <button
+                type="button"
+                [disabled]="draft.lines.length === 1"
+                (click)="draft.lines.splice(i, 1)"
+              >
+                Quitar producto {{ i + 1 }}
+              </button>
+            </fieldset>
+          }
+          <button
+            type="button"
+            [disabled]="draft.lines.length >= store.products.length"
+            (click)="addLine()"
+          >
+            Añadir producto
+          </button>
+          @if (!internal) {
+            <div class="fields logistics">
+              <label
+                >Transporte en volqueta (COP)<input
+                  type="number"
+                  name="freight"
+                  [(ngModel)]="draft.freight"
+                  min="0"
+                  step="1"
+                  required /></label
+              ><label
+                >Servicio de cargador (COP)<input
+                  type="number"
+                  name="loading"
+                  [(ngModel)]="draft.loading"
+                  min="0"
+                  step="1"
+                  required /></label
+              ><label
+                >Retención simulada (%)<input
+                  type="number"
+                  name="retention"
+                  [(ngModel)]="draft.retention"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  required
+              /></label>
+              @if (draft.kind === 'venta') {
+                <label
+                  >Placa de volqueta<input
+                    name="vehicle"
+                    [(ngModel)]="draft.vehicle"
+                    placeholder="Ej. NAR-321"
+                /></label>
+              }
+            </div>
+            <div class="quote">
+              <div>
+                <span>Subtotal productos</span
+                ><b>{{
+                  totals.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+                }}</b>
+              </div>
+              <div>
+                <span>IVA</span
+                ><b>{{ totals.tax | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</b>
+              </div>
+              <div>
+                <span>Transporte + cargador</span
+                ><b>{{
+                  totals.logistics | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+                }}</b>
+              </div>
+              <div>
+                <span>Retención</span
+                ><b
+                  >−
+                  {{ totals.withheld | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO' }}</b
+                >
+              </div>
+              <div class="total">
+                <span>Neto {{ draft.kind === 'venta' ? 'a cobrar' : 'a pagar' }}</span
+                ><b data-testid="quote-total">{{
+                  totals.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' : 'es-CO'
+                }}</b>
+              </div>
+            </div>
+            <p class="hint">
+              Simulación: IVA por producto y retención sobre el subtotal. Transporte y cargador se
+              suman sin impuestos. La venta se cobra de contado al confirmar el despacho.
+            </p>
+            @if (draft.kind === 'venta') {
+              <p class="hint">
+                Viajes estimados: {{ trips }} · Capacidad de volqueta:
+                {{ store.preferences().capacity }} m³. Transporte y cargador se ingresan como costos
+                totales del documento.
+              </p>
+            }
+          }
+        }
+        <label class="logistics"
+          >Concepto / observaciones<input
+            name="note"
+            [(ngModel)]="draft.note"
+            [required]="isCash || internal"
+            placeholder="Ej. Diésel para cargador CAT 950"
+        /></label>
+      }
+      <label class="checkbox"
+        ><input type="checkbox" name="accepted" ngModel required /> Confirmo que revisé los
+        datos.</label
       >
-      @if (form.touched && form.invalid) {
-        <p class="negative" role="alert">
-          Completa los campos, usa valores mayores que cero y confirma la revisión.
-        </p>
+      @if (error) {
+        <p class="negative" role="alert">{{ error }}</p>
       }
       <div class="actions">
         <button type="button" (click)="closed.emit()">Cancelar</button

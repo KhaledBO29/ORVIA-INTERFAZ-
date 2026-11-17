@@ -18,7 +18,7 @@
         [attr.title]="section[1]"
         ><app-icon [name]="section[2]" /><span>{{ section[1] }}</span>
         @if (section[0] === 'solicitudes') {
-          <b>4</b>
+          <b>{{ store.pendingRequests() }}</b>
         }
       </a>
     }
@@ -26,7 +26,7 @@
   <div class="sidebar-bottom">
     <div class="plant">
       <span class="plant-dot"></span>
-      <div>ORVIA · Planta principal<small>Plan empresarial · Demo</small></div>
+      <div>ORVIA · {{ store.preferences().name }}<small>Plan empresarial · Demo</small></div>
     </div>
     <button (click)="toggle.emit()" class="collapse-button">
       <app-icon name="menu" /><span>{{ collapsed() ? 'Expandir menú' : 'Contraer menú' }}</span>

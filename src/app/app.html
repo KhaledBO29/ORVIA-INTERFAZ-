@@ -17,6 +17,9 @@
         <p role="alert" class="notice">{{ store.storageError() }}</p>
       }
       <router-outlet />
+      @if (store.recovery()) {
+        <p role="alert" class="notice">{{ store.recovery() }}</p>
+      }
     </main>
   </div>
 </div>
