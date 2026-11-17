@@ -6,6 +6,7 @@ Se conserva la navegación lateral de 14 secciones y la apariencia de marca, men
 
 ## Comprobaciones
 
+- `npm run typecheck`: verifica los tipos de Angular y de las pruebas de Playwright. `rootDir` se declara explícitamente para evitar TS5011 en editores con TypeScript 6; las pruebas usan los tipos de Node y su configuración real de Playwright.
 - `npm run build`: compilación de producción con los presupuestos de Angular.
 - `npm test`: 21 pruebas automatizadas, con recorridos de navegador y reglas de dominio.
 - Compra mixta de diésel y banda con IVA por línea, retención y logística; recepción única, costo, stock y dos abonos hasta saldo cero.

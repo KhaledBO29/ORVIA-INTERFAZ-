@@ -44,9 +44,12 @@ Cada módulo consulta sus entidades y documentos. El flujo **solicitud → orden
 ## Validar
 
 ```powershell
+npm run typecheck
 npm run build
 npm test
 ```
+
+`typecheck` revisa los tipos de la aplicación y de las pruebas de Playwright. La configuración declara `rootDir` explícitamente para evitar el diagnóstico TS5011 de editores con TypeScript 6; Angular utiliza la versión TypeScript 5.9 del proyecto. En VS Code puedes seleccionar **TypeScript: Select TypeScript Version → Use Workspace Version**.
 
 En Windows las pruebas usan Google Chrome instalado. En Linux/macOS instala Chromium con `npx playwright install chromium`. La configuración inicia Angular automáticamente cuando el puerto 4200 está libre.
 

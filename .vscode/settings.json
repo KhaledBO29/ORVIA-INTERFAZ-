@@ -2,5 +2,6 @@
   "git-graph.graph.colours": ["#00e5ff", "#ff00dd", "#00ff66"],
   "git-graph.graph.style": "rounded",
   "git-graph.repository.commits.order": "date",
-  "git-graph.referenceLabels.combineLocalAndRemoteBranchLabels": true
+  "git-graph.referenceLabels.combineLocalAndRemoteBranchLabels": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
